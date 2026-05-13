@@ -144,47 +144,56 @@ const SEGMENTS = [
   {
     title: "Produtividade",
     description: "Organize sua rotina e maximize seu tempo.",
-    toolIds: ["hours", "checklist", "pomodoro"]
+    toolIds: ["hours", "checklist", "pomodoro"],
+    color: "cyan-500"
   },
   {
     title: "Financeiro",
     description: "Controle de investimentos e métricas de performance.",
-    toolIds: ["calc", "percent", "interest", "netsalary", "inss", "thirteenth", "vacation", "overtime", "currency"]
+    toolIds: ["calc", "percent", "interest", "netsalary", "inss", "thirteenth", "vacation", "overtime", "currency"],
+    color: "emerald-500"
   },
   {
     title: "Social e Marketing",
     description: "Gere visibilidade e conexões rápidas.",
-    toolIds: ["qrcode", "barcode", "instagrambio", "hashtags", "whatsapp"]
+    toolIds: ["qrcode", "barcode", "instagrambio", "hashtags", "whatsapp"],
+    color: "pink-500"
   },
   {
     title: "Texto e Escrita",
     description: "Ferramentas para redação e copywriting.",
-    toolIds: ["text", "lorem", "case", "accents", "spelling", "inverter", "html", "sort", "words"]
+    toolIds: ["text", "lorem", "case", "accents", "spelling", "inverter", "html", "sort", "words"],
+    color: "amber-500"
   },
   {
     title: "Técnico e Dev",
     description: "Utilitários essenciais para desenvolvedores.",
-    toolIds: ["json", "mockdata"]
+    toolIds: ["json", "mockdata"],
+    color: "indigo-500"
   },
   {
     title: "Web Design e Imagem",
     description: "Crie identidades visuais impactantes.",
-    toolIds: ["colors"]
+    toolIds: ["colors"],
+    color: "violet-500"
   },
   {
     title: "Utilidades",
     description: "Conversores e cálculos gerais do dia a dia.",
-    toolIds: ["unit", "password", "roman", "energyvolume", "cpf"]
+    toolIds: ["unit", "password", "roman", "energyvolume", "cpf"],
+    color: "blue-500"
   },
   {
     title: "Planejamento",
     description: "Ferramentas para cronogramas e prazos.",
-    toolIds: ["dates"]
+    toolIds: ["dates"],
+    color: "orange-500"
   },
   {
     title: "Saúde",
     description: "Monitore seu bem-estar e indicadores físicos.",
-    toolIds: ["bmi", "idealweight", "menstrual", "pregnancy", "dogage", "catage", "temperature"]
+    toolIds: ["bmi", "idealweight", "menstrual", "pregnancy", "dogage", "catage", "temperature"],
+    color: "rose-500"
   }
 ];
 
@@ -261,8 +270,9 @@ export default function App() {
                   setActiveTool(null);
                 }}
                 className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
-                  activeSegment === idx && !activeTool ? "text-emerald-400" : "text-slate-400 hover:text-white"
+                  activeSegment === idx && !activeTool ? "" : "text-slate-400 hover:text-white"
                 }`}
+                style={activeSegment === idx && !activeTool ? { color: `var(--color-${segment.color})` } : {}}
               >
                 {segment.title}
               </button>
@@ -324,8 +334,12 @@ export default function App() {
                       setSidebarOpen(false);
                     }}
                     className={`flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors ${
-                      activeSegment === idx && !activeTool ? "bg-emerald-500/10 text-emerald-400" : "hover:bg-white/5 text-slate-400"
+                      activeSegment === idx && !activeTool ? "" : "hover:bg-white/5 text-slate-400"
                     }`}
+                    style={activeSegment === idx && !activeTool ? { 
+                      backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 10%, transparent)`,
+                      color: `var(--color-${segment.color})` 
+                    } : {}}
                   >
                     <span className="font-medium">{segment.title}</span>
                   </button>
@@ -365,35 +379,60 @@ export default function App() {
               </div>
 
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 pb-12">
-                {SEGMENTS.map((segment, sIdx) => (
-                  <motion.div 
-                    key={sIdx} 
-                    whileHover={{ y: -10, scale: 1.02 }}
-                    onClick={() => setActiveSegment(sIdx)}
-                    className="group relative cursor-pointer rounded-[2rem] border border-white/5 bg-[#0a1e31] p-8 transition-all hover:border-emerald-500/50 hover:bg-[#0f2a45] shadow-xl"
-                  >
-                    <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-black transition-all">
-                       {/* Contextual Icon based on segment */}
-                       {sIdx === 0 && <Clock className="h-7 w-7" />}
-                       {sIdx === 1 && <Calculator className="h-7 w-7" />}
-                       {sIdx === 2 && <Hash className="h-7 w-7" />}
-                       {sIdx === 3 && <Type className="h-7 w-7" />}
-                       {sIdx === 4 && <Search className="h-7 w-7" />}
-                       {sIdx === 5 && <Palette className="h-7 w-7" />}
-                       {sIdx === 6 && <RefreshCw className="h-7 w-7" />}
-                       {sIdx === 7 && <Info className="h-7 w-7" />}
-                       {sIdx === 8 && <Heart className="h-7 w-7" />}
-                    </div>
-                    <div className="flex items-center gap-2 mb-2">
-                       <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500/40">{(sIdx + 1).toString().padStart(2, '0')}</span>
-                    </div>
-                    <h3 className="text-2xl font-black tracking-tighter uppercase text-white leading-tight">{segment.title}</h3>
-                    <p className="mt-3 text-slate-500 text-sm font-medium leading-relaxed">{segment.description}</p>
-                    <div className="mt-8 flex items-center text-[10px] font-black uppercase tracking-widest text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                        Ver Ferramentas <ChevronRight className="ml-1 h-3 w-3" />
-                    </div>
-                  </motion.div>
-                ))}
+                {SEGMENTS.map((segment, sIdx) => {
+                  return (
+                    <motion.div 
+                      key={sIdx} 
+                      whileHover={{ y: -10, scale: 1.02 }}
+                      onClick={() => setActiveSegment(sIdx)}
+                      className="group relative cursor-pointer rounded-[2rem] border border-white/5 p-8 transition-all shadow-xl hover:shadow-2xl"
+                      style={{ 
+                         backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 3%, #05192d)`
+                      }}
+                    >
+                      {/* Using unique hover border color based on segment color */}
+                      <div 
+                        className="absolute inset-0 rounded-[2rem] border border-transparent group-hover:border-current transition-colors pointer-events-none opacity-50" 
+                        style={{ color: `var(--color-${segment.color})` }}
+                      />
+                      
+                      <div 
+                        className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl transition-all group-hover:bg-current group-hover:text-black"
+                        style={{ 
+                          backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 10%, transparent)`,
+                          color: `var(--color-${segment.color})`
+                        }}
+                      >
+                         {/* Contextual Icon based on segment */}
+                         {sIdx === 0 && <Clock className="h-7 w-7" />}
+                         {sIdx === 1 && <Calculator className="h-7 w-7" />}
+                         {sIdx === 2 && <Hash className="h-7 w-7" />}
+                         {sIdx === 3 && <Type className="h-7 w-7" />}
+                         {sIdx === 4 && <Search className="h-7 w-7" />}
+                         {sIdx === 5 && <Palette className="h-7 w-7" />}
+                         {sIdx === 6 && <RefreshCw className="h-7 w-7" />}
+                         {sIdx === 7 && <Info className="h-7 w-7" />}
+                         {sIdx === 8 && <Heart className="h-7 w-7" />}
+                      </div>
+                      <div className="flex items-center gap-2 mb-2">
+                         <span 
+                           className="text-[10px] font-black uppercase tracking-widest opacity-40"
+                           style={{ color: `var(--color-${segment.color})` }}
+                         >
+                            {(sIdx + 1).toString().padStart(2, '0')}
+                         </span>
+                      </div>
+                      <h3 className="text-2xl font-black tracking-tighter uppercase text-white leading-tight">{segment.title}</h3>
+                      <p className="mt-3 text-slate-500 text-sm font-medium leading-relaxed">{segment.description}</p>
+                      <div 
+                        className="mt-8 flex items-center text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{ color: `var(--color-${segment.color})` }}
+                      >
+                          Ver Ferramentas <ChevronRight className="ml-1 h-3 w-3" />
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
             </motion.div>
           ) : !activeTool && activeSegment !== null ? (
@@ -413,8 +452,16 @@ export default function App() {
 
               <div className="max-w-4xl">
                  <div className="flex items-center gap-4 mb-4">
-                    <span className="h-1 w-12 bg-emerald-500 rounded-full" />
-                    <span className="text-xs font-black uppercase tracking-[0.3em] text-emerald-500">Ferramentas de {SEGMENTS[activeSegment].title}</span>
+                    <span 
+                      className="h-1 w-12 rounded-full" 
+                      style={{ backgroundColor: `var(--color-${SEGMENTS[activeSegment].color})` }}
+                    />
+                    <span 
+                      className="text-xs font-black uppercase tracking-[0.3em]"
+                      style={{ color: `var(--color-${SEGMENTS[activeSegment].color})` }}
+                    >
+                      Ferramentas de {SEGMENTS[activeSegment].title}
+                    </span>
                  </div>
                  <h2 className="text-5xl font-black tracking-tighter text-white uppercase">{SEGMENTS[activeSegment].title}</h2>
                  <p className="mt-4 text-slate-400 text-lg font-medium">{SEGMENTS[activeSegment].description}</p>
@@ -424,19 +471,33 @@ export default function App() {
                 {SEGMENTS[activeSegment].toolIds.map((toolId) => {
                   const tool = TOOLS.find(t => t.id === toolId);
                   if (!tool) return null;
+                  const segmentColor = SEGMENTS[activeSegment].color;
                   return (
                     <motion.div
                       key={tool.id}
                       whileHover={{ y: -5 }}
                       onClick={() => setActiveTool(tool.id as ToolId)}
-                      className="group/tool cursor-pointer rounded-3xl border border-white/5 bg-[#0a1e31] p-8 transition-all hover:border-emerald-500/50 hover:bg-[#0f2a45]"
+                      className="group/tool cursor-pointer rounded-3xl border border-white/5 p-8 transition-all shadow-lg hover:shadow-2xl"
+                      style={{ 
+                        borderColor: `color-mix(in srgb, var(--color-${segmentColor}) 20%, transparent)`,
+                        backgroundColor: `color-mix(in srgb, var(--color-${segmentColor}) 3%, #05192d)`
+                      } as any}
                     >
-                      <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-500 group-hover/tool:bg-emerald-500 group-hover/tool:text-[#05192d] transition-all">
+                      <div 
+                        className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl transition-all group-hover/tool:bg-current group-hover/tool:text-[#05192d]"
+                        style={{ 
+                          backgroundColor: `color-mix(in srgb, var(--color-${segmentColor}) 10%, transparent)`,
+                          color: `var(--color-${segmentColor})`
+                        }}
+                      >
                         <tool.icon className="h-6 w-6" />
                       </div>
                       <h4 className="text-xl font-bold text-white tracking-tight">{tool.name}</h4>
                       <p className="mt-2 text-sm text-slate-400 leading-relaxed font-medium">{tool.description}</p>
-                      <div className="mt-6 flex items-center text-[10px] font-black uppercase tracking-widest text-emerald-500 opacity-0 group-hover/tool:opacity-100 transition-opacity">
+                      <div 
+                        className="mt-6 flex items-center text-[10px] font-black uppercase tracking-widest opacity-0 group-hover/tool:opacity-100 transition-opacity"
+                        style={{ color: `var(--color-${segmentColor})` }}
+                      >
                          Abrir <ChevronRight className="ml-1 h-3 w-3" />
                       </div>
                     </motion.div>
