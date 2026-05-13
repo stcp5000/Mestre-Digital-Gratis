@@ -31,7 +31,12 @@ import {
   Baby,
   Dog,
   Cat,
-  Instagram
+  Instagram,
+  Thermometer,
+  Scroll,
+  Zap,
+  Barcode as BarcodeIcon,
+  Users
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -71,9 +76,16 @@ const MenstrualCycleTool = lazy(() => import("./components/tools/MenstrualCycleT
 const PregnancyCalculatorTool = lazy(() => import("./components/tools/PregnancyCalculatorTool"));
 const DogAgeCalculatorTool = lazy(() => import("./components/tools/DogAgeCalculatorTool"));
 const CatAgeCalculatorTool = lazy(() => import("./components/tools/CatAgeCalculatorTool"));
+const TemperatureConverterTool = lazy(() => import("./components/tools/TemperatureConverterTool"));
+const RomanNumeralsTool = lazy(() => import("./components/tools/RomanNumeralsTool"));
+const EnergyVolumeConverterTool = lazy(() => import("./components/tools/EnergyVolumeConverterTool"));
+const BarcodeTool = lazy(() => import("./components/tools/BarcodeTool"));
+const MockDataTool = lazy(() => import("./components/tools/MockDataTool"));
+const InstagramBioTool = lazy(() => import("./components/tools/InstagramBioTool"));
+const CPFValidatorTool = lazy(() => import("./components/tools/CPFValidatorTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf";
 
 interface Tool {
   id: ToolId;
@@ -119,6 +131,13 @@ const TOOLS: Tool[] = [
   { id: "pregnancy", name: "Calculadora Gestacional", description: "Idade e Milestones", icon: Baby, color: "bg-rose-500" },
   { id: "dogage", name: "Idade Humana (Pet)", description: "Cálculo por porte e idade", icon: Dog, color: "bg-rose-500" },
   { id: "catage", name: "Idade Humana (Gato)", description: "Projeção de anos felinos", icon: Cat, color: "bg-rose-500" },
+  { id: "temperature", name: "Temperatura", description: "Conversores e Sensação Térmica", icon: Thermometer, color: "bg-orange-500" },
+  { id: "roman", name: "Números Romanos", description: "Decimal p/ Romano e vice-versa", icon: Scroll, color: "bg-amber-500" },
+  { id: "energyvolume", name: "Energia & Volume", description: "Conversões técnicas e físicas", icon: Zap, color: "bg-indigo-500" },
+  { id: "barcode", name: "Código de Barras", description: "Gerador multi-formato", icon: BarcodeIcon, color: "bg-blue-500" },
+  { id: "mockdata", name: "Dados Fictícios", description: "Massa de teste e perfis", icon: Users, color: "bg-blue-500" },
+  { id: "instagrambio", name: "Bios Instagram", description: "Ideias e fontes especiais", icon: Instagram, color: "bg-pink-500" },
+  { id: "cpf", name: "Validador de CPF", description: "Verificação e região fiscal", icon: Shield, color: "bg-blue-500" },
 ];
 
 const SEGMENTS = [
@@ -135,7 +154,7 @@ const SEGMENTS = [
   {
     title: "Social e Marketing",
     description: "Gere visibilidade e conexões rápidas.",
-    toolIds: ["qrcode", "hashtags", "whatsapp"]
+    toolIds: ["qrcode", "barcode", "instagrambio", "hashtags", "whatsapp"]
   },
   {
     title: "Texto e Escrita",
@@ -145,7 +164,7 @@ const SEGMENTS = [
   {
     title: "Técnico e Dev",
     description: "Utilitários essenciais para desenvolvedores.",
-    toolIds: ["json"]
+    toolIds: ["json", "mockdata"]
   },
   {
     title: "Web Design e Imagem",
@@ -155,7 +174,7 @@ const SEGMENTS = [
   {
     title: "Utilidades",
     description: "Conversores e cálculos gerais do dia a dia.",
-    toolIds: ["unit", "password"]
+    toolIds: ["unit", "password", "roman", "energyvolume", "cpf"]
   },
   {
     title: "Planejamento",
@@ -165,7 +184,7 @@ const SEGMENTS = [
   {
     title: "Saúde",
     description: "Monitore seu bem-estar e indicadores físicos.",
-    toolIds: ["bmi", "idealweight", "menstrual", "pregnancy", "dogage", "catage"]
+    toolIds: ["bmi", "idealweight", "menstrual", "pregnancy", "dogage", "catage", "temperature"]
   }
 ];
 
@@ -535,6 +554,13 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "pregnancy": return <PregnancyCalculatorTool />;
           case "dogage": return <DogAgeCalculatorTool />;
           case "catage": return <CatAgeCalculatorTool />;
+          case "temperature": return <TemperatureConverterTool />;
+          case "roman": return <RomanNumeralsTool />;
+          case "energyvolume": return <EnergyVolumeConverterTool />;
+          case "barcode": return <BarcodeTool />;
+          case "mockdata": return <MockDataTool />;
+          case "instagrambio": return <InstagramBioTool />;
+          case "cpf": return <CPFValidatorTool />;
           default: return null;
         }
       })()}
