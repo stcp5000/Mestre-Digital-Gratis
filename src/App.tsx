@@ -30,7 +30,8 @@ import {
   Flower2,
   Baby,
   Dog,
-  Cat
+  Cat,
+  Instagram
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -250,11 +251,15 @@ export default function App() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <button 
-              className="rounded-full bg-emerald-500 px-6 py-2 text-xs font-black uppercase tracking-widest text-black transition-all hover:bg-green-400 active:scale-95"
+            <a 
+              href="https://www.instagram.com/mestreferramentasdigitaisfree/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex rounded-full bg-white/5 p-2 text-slate-400 hover:bg-emerald-500 hover:text-black transition-all"
+              title="Siga-nos no Instagram"
             >
-              Começar Agora
-            </button>
+              <Instagram className="h-5 w-5" />
+            </a>
           </div>
         </div>
       </header>
@@ -461,10 +466,19 @@ export default function App() {
             <p className="text-xs font-medium text-slate-500">
               © 2026 Mestre Digital. Agilidade e eficiência quando você precisa.
             </p>
-            <div className="flex gap-8 text-xs font-bold text-slate-500 uppercase tracking-widest">
+            <div className="flex gap-8 text-xs font-bold text-slate-500 uppercase tracking-widest items-center">
+              <a 
+                href="https://www.instagram.com/mestreferramentasdigitaisfree/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:text-emerald-400 transition-colors"
+                title="Instagram"
+              >
+                <Instagram className="h-4 w-4" />
+                <span className="hidden sm:inline">Instagram</span>
+              </a>
               <a href="#" className="hover:text-emerald-400 transition-colors">Termos</a>
               <a href="#" className="hover:text-emerald-400 transition-colors">Privacidade</a>
-              <a href="#" className="hover:text-emerald-400 transition-colors">Suporte</a>
             </div>
           </div>
         </div>
