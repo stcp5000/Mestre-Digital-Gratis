@@ -17,7 +17,20 @@ import {
   Shield,
   Sparkles,
   Repeat,
-  Code
+  Code,
+  SortAsc,
+  Percent,
+  TrendingUp,
+  Banknote,
+  Calendar,
+  Palmtree,
+  Globe,
+  Heart,
+  Scale,
+  Flower2,
+  Baby,
+  Dog,
+  Cat
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -41,9 +54,25 @@ const AccentRemoverTool = lazy(() => import("./components/tools/AccentRemoverToo
 const SpellCheckerTool = lazy(() => import("./components/tools/SpellCheckerTool"));
 const TextInverterTool = lazy(() => import("./components/tools/TextInverterTool"));
 const HtmlConverterTool = lazy(() => import("./components/tools/HtmlConverterTool"));
+const AlphabeticalSorterTool = lazy(() => import("./components/tools/AlphabeticalSorterTool"));
+const NumberToWordsTool = lazy(() => import("./components/tools/NumberToWordsTool"));
+const PercentageCalculatorTool = lazy(() => import("./components/tools/PercentageCalculatorTool"));
+const InterestCalculatorTool = lazy(() => import("./components/tools/InterestCalculatorTool"));
+const NetSalaryCalculatorTool = lazy(() => import("./components/tools/NetSalaryCalculatorTool"));
+const InssCalculatorTool = lazy(() => import("./components/tools/InssCalculatorTool"));
+const ThirteenthSalaryCalculatorTool = lazy(() => import("./components/tools/ThirteenthSalaryCalculatorTool"));
+const VacationCalculatorTool = lazy(() => import("./components/tools/VacationCalculatorTool"));
+const OvertimeCalculatorTool = lazy(() => import("./components/tools/OvertimeCalculatorTool"));
+const CurrencyConverterTool = lazy(() => import("./components/tools/CurrencyConverterTool"));
+const BmiCalculatorTool = lazy(() => import("./components/tools/BmiCalculatorTool"));
+const IdealWeightCalculatorTool = lazy(() => import("./components/tools/IdealWeightCalculatorTool"));
+const MenstrualCycleTool = lazy(() => import("./components/tools/MenstrualCycleTool"));
+const PregnancyCalculatorTool = lazy(() => import("./components/tools/PregnancyCalculatorTool"));
+const DogAgeCalculatorTool = lazy(() => import("./components/tools/DogAgeCalculatorTool"));
+const CatAgeCalculatorTool = lazy(() => import("./components/tools/CatAgeCalculatorTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage";
 
 interface Tool {
   id: ToolId;
@@ -73,6 +102,22 @@ const TOOLS: Tool[] = [
   { id: "spelling", name: "Corretor IA", description: "Ortografia e Gramática", icon: Sparkles, color: "bg-emerald-500" },
   { id: "inverter", name: "Inversor de Texto", description: "Inverter letras e palavras", icon: Repeat, color: "bg-emerald-500" },
   { id: "html", name: "Conversor HTML", description: "Entidades e Tags HTML", icon: Code, color: "bg-emerald-500" },
+  { id: "sort", name: "Ordenador Alfabético", description: "Organizar listas e nomes", icon: SortAsc, color: "bg-emerald-500" },
+  { id: "words", name: "Número Extenso", description: "Escrever valores e moedas", icon: Hash, color: "bg-emerald-500" },
+  { id: "percent", name: "Porcentagem", description: "Cálculos e variações", icon: Percent, color: "bg-emerald-500" },
+  { id: "interest", name: "Juros Simples/Comp.", description: "Projeções Financeiras", icon: TrendingUp, color: "bg-emerald-500" },
+  { id: "netsalary", name: "Salário Líquido", description: "Cálculo de CLT e Descontos", icon: Banknote, color: "bg-emerald-500" },
+  { id: "inss", name: "INSS 2024/2025", description: "Contribuição e Alíquotas", icon: Shield, color: "bg-emerald-500" },
+  { id: "thirteenth", name: "Décimo Terceiro", description: "Cálculo de 13º Salário", icon: Calendar, color: "bg-emerald-500" },
+  { id: "vacation", name: "Cálculo de Férias", description: "Recibo e Terço Const.", icon: Palmtree, color: "bg-emerald-500" },
+  { id: "overtime", name: "Horas Extras", description: "Cálculo de Adicionais", icon: Clock, color: "bg-emerald-500" },
+  { id: "currency", name: "Conversor de Moedas", description: "Câmbio em tempo real", icon: Globe, color: "bg-emerald-500" },
+  { id: "bmi", name: "Cálculo de IMC", description: "Saúde e Peso Ideal", icon: Heart, color: "bg-rose-500" },
+  { id: "idealweight", name: "Peso Ideal Médio", description: "Metas de saúde e fórmulas", icon: Scale, color: "bg-rose-500" },
+  { id: "menstrual", name: "Ciclo Menstrual", description: "Calendário e Fertilidade", icon: Flower2, color: "bg-rose-500" },
+  { id: "pregnancy", name: "Calculadora Gestacional", description: "Idade e Milestones", icon: Baby, color: "bg-rose-500" },
+  { id: "dogage", name: "Idade Humana (Pet)", description: "Cálculo por porte e idade", icon: Dog, color: "bg-rose-500" },
+  { id: "catage", name: "Idade Humana (Gato)", description: "Projeção de anos felinos", icon: Cat, color: "bg-rose-500" },
 ];
 
 const SEGMENTS = [
@@ -84,7 +129,7 @@ const SEGMENTS = [
   {
     title: "Financeiro",
     description: "Controle de investimentos e métricas de performance.",
-    toolIds: ["calc"]
+    toolIds: ["calc", "percent", "interest", "netsalary", "inss", "thirteenth", "vacation", "overtime", "currency"]
   },
   {
     title: "Social e Marketing",
@@ -94,7 +139,7 @@ const SEGMENTS = [
   {
     title: "Texto e Escrita",
     description: "Ferramentas para redação e copywriting.",
-    toolIds: ["text", "lorem", "case", "accents", "spelling", "inverter", "html"]
+    toolIds: ["text", "lorem", "case", "accents", "spelling", "inverter", "html", "sort", "words"]
   },
   {
     title: "Técnico e Dev",
@@ -115,6 +160,11 @@ const SEGMENTS = [
     title: "Planejamento",
     description: "Ferramentas para cronogramas e prazos.",
     toolIds: ["dates"]
+  },
+  {
+    title: "Saúde",
+    description: "Monitore seu bem-estar e indicadores físicos.",
+    toolIds: ["bmi", "idealweight", "menstrual", "pregnancy", "dogage", "catage"]
   }
 ];
 
@@ -308,6 +358,7 @@ export default function App() {
                        {sIdx === 5 && <Palette className="h-7 w-7" />}
                        {sIdx === 6 && <RefreshCw className="h-7 w-7" />}
                        {sIdx === 7 && <Info className="h-7 w-7" />}
+                       {sIdx === 8 && <Heart className="h-7 w-7" />}
                     </div>
                     <div className="flex items-center gap-2 mb-2">
                        <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500/40">{(sIdx + 1).toString().padStart(2, '0')}</span>
@@ -454,6 +505,22 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "spelling": return <SpellCheckerTool />;
           case "inverter": return <TextInverterTool />;
           case "html": return <HtmlConverterTool />;
+          case "sort": return <AlphabeticalSorterTool />;
+          case "words": return <NumberToWordsTool />;
+          case "percent": return <PercentageCalculatorTool />;
+          case "interest": return <InterestCalculatorTool />;
+          case "netsalary": return <NetSalaryCalculatorTool />;
+          case "inss": return <InssCalculatorTool />;
+          case "thirteenth": return <ThirteenthSalaryCalculatorTool />;
+          case "vacation": return <VacationCalculatorTool />;
+          case "overtime": return <OvertimeCalculatorTool />;
+          case "currency": return <CurrencyConverterTool />;
+          case "bmi": return <BmiCalculatorTool />;
+          case "idealweight": return <IdealWeightCalculatorTool />;
+          case "menstrual": return <MenstrualCycleTool />;
+          case "pregnancy": return <PregnancyCalculatorTool />;
+          case "dogage": return <DogAgeCalculatorTool />;
+          case "catage": return <CatAgeCalculatorTool />;
           default: return null;
         }
       })()}
