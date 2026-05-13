@@ -41,6 +41,32 @@ app.post("/api/generate-hashtags", async (req, res) => {
   }
 });
 
+app.post("/api/spell-check", async (req, res) => {
+  const { text, tone, language } = req.body;
+  if (!text) {
+    return res.status(400).json({ error: "Text is required" });
+  }
+
+  try {
+    const prompt = `You are a professional editor. Correct the following text for spelling, grammar, and punctuation. 
+    Language: ${language || 'Portuguese'}
+    Tone requested: ${tone || 'Standard'}
+    Original Text: ${text}
+    
+    Return the corrected text only. Do not include explanations, notes, or any other content. If the text is already perfect according to the tone, return it as is.`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+    });
+    
+    res.json({ correctedText: response.text });
+  } catch (error: any) {
+    console.error("Gemini Error:", error);
+    res.status(500).json({ error: "Failed to process spell check" });
+  }
+});
+
 async function startServer() {
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {

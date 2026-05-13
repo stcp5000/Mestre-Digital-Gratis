@@ -14,7 +14,10 @@ import {
   Search,
   ExternalLink,
   Clock,
-  Shield
+  Shield,
+  Sparkles,
+  Repeat,
+  Code
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -34,9 +37,13 @@ const DatesTool = lazy(() => import("./components/tools/DatesTool"));
 const LoremIpsumTool = lazy(() => import("./components/tools/LoremIpsumTool"));
 const CaseConverterTool = lazy(() => import("./components/tools/CaseConverterTool"));
 const PasswordTool = lazy(() => import("./components/tools/PasswordTool"));
+const AccentRemoverTool = lazy(() => import("./components/tools/AccentRemoverTool"));
+const SpellCheckerTool = lazy(() => import("./components/tools/SpellCheckerTool"));
+const TextInverterTool = lazy(() => import("./components/tools/TextInverterTool"));
+const HtmlConverterTool = lazy(() => import("./components/tools/HtmlConverterTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html";
 
 interface Tool {
   id: ToolId;
@@ -62,6 +69,10 @@ const TOOLS: Tool[] = [
   { id: "lorem", name: "Lorem Ipsum", description: "Gerador de preenchimento", icon: Type, color: "bg-emerald-500" },
   { id: "case", name: "Conversor de Letras", description: "Maiúsculas e minúsculas", icon: Type, color: "bg-emerald-500" },
   { id: "password", name: "Gerador de Senha", description: "Segurança avançada", icon: Shield, color: "bg-emerald-500" },
+  { id: "accents", name: "Removedor de Acentos", description: "Limpeza de caracteres", icon: Type, color: "bg-emerald-500" },
+  { id: "spelling", name: "Corretor IA", description: "Ortografia e Gramática", icon: Sparkles, color: "bg-emerald-500" },
+  { id: "inverter", name: "Inversor de Texto", description: "Inverter letras e palavras", icon: Repeat, color: "bg-emerald-500" },
+  { id: "html", name: "Conversor HTML", description: "Entidades e Tags HTML", icon: Code, color: "bg-emerald-500" },
 ];
 
 const SEGMENTS = [
@@ -83,7 +94,7 @@ const SEGMENTS = [
   {
     title: "Texto e Escrita",
     description: "Ferramentas para redação e copywriting.",
-    toolIds: ["text", "lorem", "case"]
+    toolIds: ["text", "lorem", "case", "accents", "spelling", "inverter", "html"]
   },
   {
     title: "Técnico e Dev",
@@ -439,6 +450,10 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "lorem": return <LoremIpsumTool />;
           case "case": return <CaseConverterTool />;
           case "password": return <PasswordTool />;
+          case "accents": return <AccentRemoverTool />;
+          case "spelling": return <SpellCheckerTool />;
+          case "inverter": return <TextInverterTool />;
+          case "html": return <HtmlConverterTool />;
           default: return null;
         }
       })()}
