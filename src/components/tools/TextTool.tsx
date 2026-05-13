@@ -16,7 +16,7 @@ export default function TextTool() {
         <span className="inline-block px-2 py-0.5 bg-cyan-500/10 text-cyan-400 text-[10px] font-bold tracking-widest rounded border border-cyan-500/20 uppercase mb-4">
           Redação e Copywriting
         </span>
-        <h2 className="text-4xl font-extrabold text-white tracking-tighter">Manipulação de Texto</h2>
+        <h2 className="text-4xl font-extrabold text-white tracking-tighter">Contador de Texto e Caracteres</h2>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">

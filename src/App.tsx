@@ -13,7 +13,8 @@ import {
   RefreshCw,
   Search,
   ExternalLink,
-  Clock
+  Clock,
+  Shield
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -31,9 +32,11 @@ const PomodoroTool = lazy(() => import("./components/tools/PomodoroTool"));
 const UnitTool = lazy(() => import("./components/tools/UnitTool"));
 const DatesTool = lazy(() => import("./components/tools/DatesTool"));
 const LoremIpsumTool = lazy(() => import("./components/tools/LoremIpsumTool"));
+const CaseConverterTool = lazy(() => import("./components/tools/CaseConverterTool"));
+const PasswordTool = lazy(() => import("./components/tools/PasswordTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password";
 
 interface Tool {
   id: ToolId;
@@ -47,7 +50,7 @@ const TOOLS: Tool[] = [
   { id: "qrcode", name: "QR Code", description: "Gerador de códigos QR", icon: QrCode, color: "bg-emerald-500" },
   { id: "hashtags", name: "Hashtags", description: "IA para hashtags virais", icon: Hash, color: "bg-emerald-500" },
   { id: "calc", name: "Financeiro", description: "ROI, CPC e Performance", icon: Calculator, color: "bg-emerald-500" },
-  { id: "text", name: "Texto", description: "Contagem e transformação", icon: Type, color: "bg-emerald-500" },
+  { id: "text", name: "Contador de Texto e Caracteres", description: "Contagem e transformação", icon: Type, color: "bg-emerald-500" },
   { id: "colors", name: "Paletas", description: "Cores e Harmonias", icon: Palette, color: "bg-emerald-500" },
   { id: "checklist", name: "Checklist", description: "Gestão de tarefas", icon: CheckSquare, color: "bg-emerald-500" },
   { id: "hours", name: "Horas", description: "Jornada de trabalho", icon: Clock, color: "bg-emerald-500" },
@@ -57,6 +60,8 @@ const TOOLS: Tool[] = [
   { id: "unit", name: "Unidades", description: "Conversor universal", icon: RefreshCw, color: "bg-emerald-500" },
   { id: "dates", name: "Datas", description: "Cálculo entre dias", icon: Info, color: "bg-emerald-500" },
   { id: "lorem", name: "Lorem Ipsum", description: "Gerador de preenchimento", icon: Type, color: "bg-emerald-500" },
+  { id: "case", name: "Conversor de Letras", description: "Maiúsculas e minúsculas", icon: Type, color: "bg-emerald-500" },
+  { id: "password", name: "Gerador de Senha", description: "Segurança avançada", icon: Shield, color: "bg-emerald-500" },
 ];
 
 const SEGMENTS = [
@@ -78,7 +83,7 @@ const SEGMENTS = [
   {
     title: "Texto e Escrita",
     description: "Ferramentas para redação e copywriting.",
-    toolIds: ["text", "lorem"]
+    toolIds: ["text", "lorem", "case"]
   },
   {
     title: "Técnico e Dev",
@@ -93,7 +98,7 @@ const SEGMENTS = [
   {
     title: "Utilidades",
     description: "Conversores e cálculos gerais do dia a dia.",
-    toolIds: ["unit"]
+    toolIds: ["unit", "password"]
   },
   {
     title: "Planejamento",
@@ -432,6 +437,8 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "unit": return <UnitTool />;
           case "dates": return <DatesTool />;
           case "lorem": return <LoremIpsumTool />;
+          case "case": return <CaseConverterTool />;
+          case "password": return <PasswordTool />;
           default: return null;
         }
       })()}
