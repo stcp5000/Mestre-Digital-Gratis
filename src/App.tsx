@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { 
   QrCode, 
   Hash, 
@@ -38,7 +38,8 @@ import {
   Barcode as BarcodeIcon,
   Users,
   Building2,
-  CreditCard
+  CreditCard,
+  Timer
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, Link } from "react-router-dom";
@@ -88,9 +89,14 @@ const InstagramBioTool = lazy(() => import("./components/tools/InstagramBioTool"
 const CPFValidatorTool = lazy(() => import("./components/tools/CPFValidatorTool"));
 const CNPJValidatorTool = lazy(() => import("./components/tools/CNPJValidatorTool"));
 const CreditCardTool = lazy(() => import("./components/tools/CreditCardTool"));
+const BoletoTool = lazy(() => import("./components/tools/BoletoTool"));
+const WorldClockTool = lazy(() => import("./components/tools/WorldClockTool"));
+const StopwatchTool = lazy(() => import("./components/tools/StopwatchTool"));
+const TimerTool = lazy(() => import("./components/tools/TimerTool"));
+const ContrastSimulatorTool = lazy(() => import("./components/tools/ContrastSimulatorTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast";
 
 interface Tool {
   id: ToolId;
@@ -153,6 +159,11 @@ const TOOLS: Tool[] = [
   { id: "cpf", name: "Validador de CPF e Origem Fiscal", description: "Verifique se um CPF é válido e descubra o estado de origem da emissão.", icon: Shield, color: "bg-blue-500" },
   { id: "cnpj", name: "Validador de CNPJ Grátis", description: "Validação matemática de CNPJ, gerador para testes e processamento em lote.", icon: Building2, color: "bg-blue-500" },
   { id: "creditcard", name: "Validador de Cartão de Crédito", description: "Verifique a validade (Luhn), bandeira e gere números de cartão para testes.", icon: CreditCard, color: "bg-blue-500" },
+  { id: "boleto", name: "Decodificador e Validador de Boleto", description: "Consulte data de vencimento, valor e banco de boletos bancários online.", icon: BarcodeIcon, color: "bg-amber-500" },
+  { id: "worldclock", name: "Relógio Mundial Digital", description: "Acompanhe fusos horários globais, horários de verão e diferenças de tempo.", icon: Globe, color: "bg-indigo-500" },
+  { id: "stopwatch", name: "Cronômetro de Alta Precisão", description: "Cronometre seu tempo com designs clássicos, divertidos e cyber, salvando voltas.", icon: Timer, color: "bg-cyan-500" },
+  { id: "timer", name: "Timer Regressivo Personalizável", description: "Programe alertas, foque em tarefas e escolha entre temas divertidos e clássicos.", icon: Clock, color: "bg-cyan-500" },
+  { id: "contrast", name: "Simulador de Contraste WCAG", description: "Verifique a acessibilidade das cores do seu site com testes AA e AAA em tempo real.", icon: Palette, color: "bg-indigo-500" },
 ].map(tool => ({ ...tool, slug: slugify(tool.name) } as Tool));
 
 
@@ -160,13 +171,13 @@ const SEGMENTS = [
   {
     title: "Produtividade",
     description: "Organize sua rotina e maximize seu tempo.",
-    toolIds: ["hours", "checklist", "pomodoro"],
+    toolIds: ["hours", "checklist", "pomodoro", "worldclock", "stopwatch", "timer"],
     color: "cyan-500"
   },
   {
     title: "Financeiro",
     description: "Controle de investimentos e métricas de performance.",
-    toolIds: ["calc", "percent", "interest", "netsalary", "inss", "thirteenth", "vacation", "overtime", "currency", "creditcard"],
+    toolIds: ["calc", "percent", "interest", "netsalary", "inss", "thirteenth", "vacation", "overtime", "currency", "creditcard", "boleto"],
     color: "emerald-500"
   },
   {
@@ -190,13 +201,13 @@ const SEGMENTS = [
   {
     title: "Web Design e Imagem",
     description: "Crie identidades visuais impactantes.",
-    toolIds: ["colors"],
+    toolIds: ["colors", "contrast"],
     color: "violet-500"
   },
   {
     title: "Utilidades",
     description: "Conversores e cálculos gerais do dia a dia.",
-    toolIds: ["unit", "password", "roman", "energyvolume", "cpf", "cnpj", "creditcard"],
+    toolIds: ["unit", "password", "roman", "energyvolume", "cpf", "cnpj", "creditcard", "boleto", "contrast"],
     color: "blue-500"
   },
   {
@@ -251,6 +262,16 @@ export default function App() {
 function AppContent() {
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearchResults, setShowSearchResults] = useState(false);
+
+  const filteredTools = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    return TOOLS.filter(tool => 
+      tool.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      tool.description.toLowerCase().includes(searchQuery.toLowerCase())
+    ).slice(0, 6);
+  }, [searchQuery]);
 
   return (
     <div className="min-h-screen bg-[#05192d] font-sans text-white selection-green">
@@ -266,11 +287,11 @@ function AppContent() {
             </button>
             <Link 
               to="/"
-              className="group flex cursor-pointer items-center gap-3"
+              className="group flex cursor-pointer items-center gap-3 shrink-0"
             >
               <div className="flex items-center gap-3">
                  <LogoIcon />
-                <div className="flex flex-col leading-none">
+                <div className="hidden sm:flex flex-col leading-none">
                   <h1 className="text-xl font-black tracking-tighter text-white">
                     MESTRE
                   </h1>
@@ -280,7 +301,71 @@ function AppContent() {
             </Link>
           </div>
 
-          <nav className="hidden items-center gap-8 md:flex text-sm">
+          {/* Search Bar */}
+          <div className="relative mx-4 flex-1 max-w-md hidden md:block">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowSearchResults(true);
+                }}
+                onFocus={() => setShowSearchResults(true)}
+                className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm text-white placeholder-slate-500 outline-none focus:border-emerald-500/50 transition-all"
+                placeholder="Buscar ferramenta..."
+              />
+            </div>
+
+            <AnimatePresence>
+              {showSearchResults && searchQuery.trim() && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-[-1]" 
+                    onClick={() => setShowSearchResults(false)} 
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-full mt-2 w-full bg-[#0A1A2F] border border-white/10 rounded-2xl shadow-2xl overflow-hidden p-2"
+                  >
+                    {filteredTools.length > 0 ? (
+                      <div className="space-y-1">
+                        {filteredTools.map((tool) => (
+                          <Link
+                            key={tool.id}
+                            to={`/ferramenta/${tool.slug}`}
+                            onClick={() => {
+                              setShowSearchResults(false);
+                              setSearchQuery("");
+                            }}
+                            className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors group"
+                          >
+                            <div className={`p-2 rounded-lg ${tool.color} bg-opacity-10 text-white shrink-0`}>
+                              <tool.icon className="h-4 w-4" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                               <h4 className="text-xs font-bold text-white truncate">{tool.name}</h4>
+                               <p className="text-[10px] text-slate-500 truncate">{tool.description}</p>
+                            </div>
+                            <ChevronRight className="h-3 w-3 text-slate-700 group-hover:text-emerald-500 transition-colors" />
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-4 text-center">
+                        <p className="text-xs text-slate-500 font-bold uppercase">Nenhuma ferramenta encontrada</p>
+                      </div>
+                    )}
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <nav className="hidden items-center gap-8 lg:flex text-sm">
             {SEGMENTS.slice(0, 5).map((segment, idx) => (
               <Link
                 key={idx}
@@ -656,6 +741,11 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "cpf": return <CPFValidatorTool />;
           case "cnpj": return <CNPJValidatorTool />;
           case "creditcard": return <CreditCardTool />;
+          case "boleto": return <BoletoTool />;
+          case "worldclock": return <WorldClockTool />;
+          case "stopwatch": return <StopwatchTool />;
+          case "timer": return <TimerTool />;
+          case "contrast": return <ContrastSimulatorTool />;
           default: return null;
         }
       })()}
