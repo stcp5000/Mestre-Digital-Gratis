@@ -102,6 +102,52 @@ app.post("/api/checklist/suggest", async (req, res) => {
   }
 });
 
+app.post("/api/cta/generate", async (req, res) => {
+  const { context, niche, focus, tone } = req.body;
+  if (!context) {
+    return res.status(400).json({ error: "Context is required" });
+  }
+
+  try {
+    const prompt = `Você é um Copywriter de Resposta Direta e especialista em conversão (CRO). 
+    Gere uma lista de 6 CTAs (Call to Actions) persuasivos para o seguinte contexto: "${context}".
+    
+    O nicho do negócio é: "${niche}".
+    O foco principal deve ser: "${focus}".
+    O estilo de design/tom solicitado pelo usuário é: "${tone}".
+
+    Para cada CTA, forneça:
+    1. O texto do CTA propriamente dito (curto, impactante e direto).
+    2. O tipo de abordagem (ex: Urgência, Autoridade, Curiosidade, Benefício Direto).
+    3. Uma breve explicação estratégica do porquê esse CTA funciona (gatilho mental utilizado).
+
+    Retorne o resultado EXCLUSIVAMENTE no formato JSON com a chave "ctas":
+    {
+      "ctas": [
+        {
+          "cta": "Texto do Botão ou Chamada",
+          "type": "Tipo de Abordagem",
+          "why": "Explicação estratégica curta"
+        }
+      ]
+    }`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      }
+    });
+    
+    const data = JSON.parse(response.text || '{"ctas": []}');
+    res.json(data);
+  } catch (error: any) {
+    console.error("Gemini CTA Error:", error);
+    res.status(500).json({ error: "Failed to generate CTAs" });
+  }
+});
+
 app.post("/api/brand-names/generate", async (req, res) => {
   const { keywords, niche, tone } = req.body;
   if (!keywords) {
@@ -135,6 +181,52 @@ app.post("/api/brand-names/generate", async (req, res) => {
   } catch (error: any) {
     console.error("Gemini Naming Error:", error);
     res.status(500).json({ error: "Failed to generate brand names" });
+  }
+});
+
+app.post("/api/caption/generate", async (req, res) => {
+  const { topic, niche, objective, tone } = req.body;
+  if (!topic) {
+    return res.status(400).json({ error: "Topic is required" });
+  }
+
+  try {
+    const prompt = `Você é um Social Media Manager e estrategista de conteúdo de elite. 
+    Gere 5 legendas irresistíveis para um post sobre: "${topic}".
+    
+    Nicho: "${niche}"
+    Objetivo: "${objective}"
+    Tom de voz: "${tone}"
+
+    Para cada legenda, inclua:
+    1. O corpo da legenda (usando emojis, espaçamento e quebras de linha para legibilidade).
+    2. Uma sugestão de 5-10 hashtags estratégicas.
+    3. Uma sugestão de CTA (Call to Action) integrado.
+
+    Retorne o resultado EXCLUSIVAMENTE no formato JSON com a chave "captions":
+    {
+      "captions": [
+        {
+          "body": "Texto da legenda aqui...",
+          "hashtags": ["#tag1", "#tag2"],
+          "cta": "Link na bio | Comenta aqui"
+        }
+      ]
+    }`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      }
+    });
+    
+    const data = JSON.parse(response.text || '{"captions": []}');
+    res.json(data);
+  } catch (error: any) {
+    console.error("Gemini Caption Error:", error);
+    res.status(500).json({ error: "Failed to generate captions" });
   }
 });
 

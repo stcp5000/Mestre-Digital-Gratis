@@ -52,7 +52,10 @@ import {
   Trophy,
   CircleCheck,
   ShoppingCart,
-  Lightbulb
+  Lightbulb,
+  MousePointer2,
+  Eraser,
+  MessageSquare
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, Link } from "react-router-dom";
@@ -124,9 +127,12 @@ const EventChecklistTool = lazy(() => import("./components/tools/EventChecklistT
 const SmartShoppingListTool = lazy(() => import("./components/tools/SmartShoppingListTool"));
 const ColorConverterTool = lazy(() => import("./components/tools/ColorConverterTool"));
 const BrandNameGeneratorTool = lazy(() => import("./components/tools/BrandNameGeneratorTool"));
+const CTAGeneratorTool = lazy(() => import("./components/tools/CTAGeneratorTool"));
+const TextCleanerTool = lazy(() => import("./components/tools/TextCleanerTool"));
+const PostCaptionGeneratorTool = lazy(() => import("./components/tools/PostCaptionGeneratorTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font" | "smart-checklist" | "loan" | "discount" | "profit-margin" | "selling-price" | "commission" | "emergency-fund" | "daily-calories" | "water-consumption" | "running-pace" | "event-checklist" | "smart-shopping-list" | "color-converter" | "brand-name-generator";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font" | "smart-checklist" | "loan" | "discount" | "profit-margin" | "selling-price" | "commission" | "emergency-fund" | "daily-calories" | "water-consumption" | "running-pace" | "event-checklist" | "smart-shopping-list" | "color-converter" | "brand-name-generator" | "cta-generator" | "text-cleaner" | "post-caption-generator";
 
 interface Tool {
   id: ToolId;
@@ -211,6 +217,9 @@ const TOOLS: Tool[] = [
   { id: "smart-shopping-list", name: "Lista de Compras Inteligente com IA: Despensa e Mercado", description: "Crie listas de compras otimizadas com sugestões da IA para mercado, churrasco ou dieta. Controle gastos e categorias com designs exclusivos e divertidos.", icon: ShoppingCart, color: "bg-indigo-500" },
   { id: "color-converter", name: "Conversor HEX / RGB / HSL: Design e Web Development", description: "Converta cores instantaneamente entre HEX, RGB e HSL. Gere paletas, verifique contraste e CMYK para print com designs web, UI e retrô.", icon: Palette, color: "bg-blue-500" },
   { id: "brand-name-generator", name: "Gerador de Nomes para Marcas: Branding e Naming com IA", description: "Encontre o nome perfeito para sua empresa, startup ou canal. Gerador de nomes criativos com IA, nichos específicos (Tech, Creative, Wellness) e designs personalizáveis.", icon: Lightbulb, color: "bg-indigo-500" },
+  { id: "cta-generator", name: "Gerador de CTA (Call to Action): Conversão e Copywriting com IA", description: "Crie chamadas para ação irresistíveis para anúncios, landing pages e redes sociais. Gere CTAs de alta conversão com nichos específicos e múltiplos designs profissionais.", icon: MousePointer2, color: "bg-rose-500" },
+  { id: "text-cleaner", name: "Limpador de Texto Online: Remover Espaços, Quebras e Caracteres", description: "Limpe seu texto instantaneamente. Remova espaços extras, linhas vazias, emojis e caracteres especiais. Otimize parágrafos com múltiplos designs dinâmicos.", icon: Eraser, color: "bg-blue-600" },
+  { id: "post-caption-generator", name: "Gerador de Legendas para Posts: Social Media e Viral com IA", description: "Sugira legendas criativas por nicho e objetivo para Instagram, TikTok e mais. Otimize seu engajamento com CTAs e designs personalizados pela IA.", icon: MessageSquare, color: "bg-pink-600" },
 ].map(tool => ({ ...tool, slug: slugify(tool.name) } as Tool));
 
 
@@ -218,7 +227,7 @@ const SEGMENTS = [
   {
     title: "Produtividade",
     description: "Organize sua rotina e maximize seu tempo.",
-    toolIds: ["hours", "checklist", "smart-checklist", "event-checklist", "smart-shopping-list", "brand-name-generator", "pomodoro", "worldclock", "stopwatch", "timer"],
+    toolIds: ["hours", "checklist", "smart-checklist", "event-checklist", "smart-shopping-list", "pomodoro", "worldclock", "stopwatch", "timer"],
     color: "cyan-500"
   },
   {
@@ -230,13 +239,13 @@ const SEGMENTS = [
   {
     title: "Social e Marketing",
     description: "Gere visibilidade e conexões rápidas.",
-    toolIds: ["qrcode", "barcode", "instagrambio", "hashtags", "whatsapp"],
+    toolIds: ["qrcode", "barcode", "instagrambio", "hashtags", "cta-generator", "post-caption-generator", "brand-name-generator", "whatsapp"],
     color: "pink-500"
   },
   {
     title: "Texto e Escrita",
     description: "Ferramentas para redação e copywriting.",
-    toolIds: ["text", "lorem", "case", "accents", "spelling", "inverter", "html", "sort", "words"],
+    toolIds: ["text", "lorem", "text-cleaner", "case", "accents", "spelling", "inverter", "html", "sort", "words"],
     color: "amber-500"
   },
   {
@@ -837,6 +846,9 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "smart-shopping-list": return <SmartShoppingListTool />;
           case "color-converter": return <ColorConverterTool />;
           case "brand-name-generator": return <BrandNameGeneratorTool />;
+          case "cta-generator": return <CTAGeneratorTool />;
+          case "text-cleaner": return <TextCleanerTool />;
+          case "post-caption-generator": return <PostCaptionGeneratorTool />;
           default: return null;
         }
       })()}
