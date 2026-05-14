@@ -3,8 +3,10 @@ import {
   QrCode, 
   Hash, 
   Calculator, 
+  Brush,
   Type, 
   Palette, 
+  Image as ImageIcon,
   CheckSquare, 
   Info,
   Menu,
@@ -94,9 +96,12 @@ const WorldClockTool = lazy(() => import("./components/tools/WorldClockTool"));
 const StopwatchTool = lazy(() => import("./components/tools/StopwatchTool"));
 const TimerTool = lazy(() => import("./components/tools/TimerTool"));
 const ContrastSimulatorTool = lazy(() => import("./components/tools/ContrastSimulatorTool"));
+const ColorPaletteTool = lazy(() => import("./components/tools/ColorPaletteTool"));
+const ImageColorPickerTool = lazy(() => import("./components/tools/ImageColorPickerTool"));
+const FontIdentifierTool = lazy(() => import("./components/tools/FontIdentifierTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font";
 
 interface Tool {
   id: ToolId;
@@ -164,6 +169,9 @@ const TOOLS: Tool[] = [
   { id: "stopwatch", name: "Cronômetro de Alta Precisão", description: "Cronometre seu tempo com designs clássicos, divertidos e cyber, salvando voltas.", icon: Timer, color: "bg-cyan-500" },
   { id: "timer", name: "Timer Regressivo Personalizável", description: "Programe alertas, foque em tarefas e escolha entre temas divertidos e clássicos.", icon: Clock, color: "bg-cyan-500" },
   { id: "contrast", name: "Simulador de Contraste WCAG", description: "Verifique a acessibilidade das cores do seu site com testes AA e AAA em tempo real.", icon: Palette, color: "bg-indigo-500" },
+  { id: "palette", name: "Paletas com Simulador de Daltonismo", description: "Gere harmonia de cores e visualize como diferentes tipos de daltonismo afetam seu design.", icon: Brush, color: "bg-violet-500" },
+  { id: "imagecolor", name: "Extrator de Cores de Imagem: Crie Paletas de Fotos", description: "Envie sua imagem e extraia cores instantaneamente. Descubra códigos HEX, RGB e crie paletas profissionais a partir de fotos e artes.", icon: ImageIcon, color: "bg-rose-500" },
+  { id: "font", name: "Identificador de Fontes em Imagens: What Font?", description: "Descubra qual fonte está em uma imagem ou screenshot. Identificação visual de tipografias e sugestão de fontes similares gratuitas.", icon: Search, color: "bg-indigo-500" },
 ].map(tool => ({ ...tool, slug: slugify(tool.name) } as Tool));
 
 
@@ -201,7 +209,7 @@ const SEGMENTS = [
   {
     title: "Web Design e Imagem",
     description: "Crie identidades visuais impactantes.",
-    toolIds: ["colors", "contrast"],
+    toolIds: ["colors", "contrast", "palette", "imagecolor", "font"],
     color: "violet-500"
   },
   {
@@ -746,6 +754,9 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "stopwatch": return <StopwatchTool />;
           case "timer": return <TimerTool />;
           case "contrast": return <ContrastSimulatorTool />;
+          case "palette": return <ColorPaletteTool />;
+          case "imagecolor": return <ImageColorPickerTool />;
+          case "font": return <FontIdentifierTool />;
           default: return null;
         }
       })()}
