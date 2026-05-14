@@ -29,6 +29,7 @@ import {
   Globe,
   Heart,
   DollarSign,
+  Tag,
   Scale,
   Flower2,
   Baby,
@@ -102,9 +103,12 @@ const ImageColorPickerTool = lazy(() => import("./components/tools/ImageColorPic
 const FontIdentifierTool = lazy(() => import("./components/tools/FontIdentifierTool"));
 const SmartChecklistTool = lazy(() => import("./components/tools/SmartChecklistTool"));
 const LoanCalculatorTool = lazy(() => import("./components/tools/LoanCalculatorTool"));
+const DiscountCalculatorTool = lazy(() => import("./components/tools/DiscountCalculatorTool"));
+const ProfitMarginCalculatorTool = lazy(() => import("./components/tools/ProfitMarginCalculatorTool"));
+const SellingPriceCalculatorTool = lazy(() => import("./components/tools/SellingPriceCalculatorTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font" | "smart-checklist" | "loan";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font" | "smart-checklist" | "loan" | "discount" | "profit-margin" | "selling-price";
 
 interface Tool {
   id: ToolId;
@@ -177,6 +181,9 @@ const TOOLS: Tool[] = [
   { id: "font", name: "Identificador de Fontes em Imagens: What Font?", description: "Descubra qual fonte está em uma imagem ou screenshot. Identificação visual de tipografias e sugestão de fontes similares gratuitas.", icon: Search, color: "bg-indigo-500" },
   { id: "smart-checklist", name: "Checklist Inteligente: Gerador de Listas Nichadas", description: "Crie checklists personalizados para SEO, Viagens, Compras e Startups. Organize tarefas com designs exclusivos e modelos otimizados.", icon: CheckSquare, color: "bg-emerald-500" },
   { id: "loan", name: "Calculadora de Parcelas de Empréstimo: Versões Nichadas", description: "Simule financiamentos de imóveis, veículos e pessoal. Calcule parcelas, taxas de juros e o custo total com designs profissionais e divertidos.", icon: DollarSign, color: "bg-emerald-500" },
+  { id: "discount", name: "Calculadora de Desconto Online: Varejo e Liquidação", description: "Calcule descontos porcentuais, cupons acumulativos e economia real. Versões para e-commerce e varejo físico com design personalizável.", icon: Tag, color: "bg-rose-500" },
+  { id: "profit-margin", name: "Calculadora de Margem de Lucro: Markup e Lucro Líquido", description: "Calcule margem operacional, markup e lucro líquido para varejo, SaaS e indústria. Tome decisões de precificação baseadas em dados reais.", icon: TrendingUp, color: "bg-emerald-500" },
+  { id: "selling-price", name: "Calculadora de Preço de Venda: Mark-up e Lucro Ideal", description: "Calcule o preço de venda perfeito para produtos e serviços. Inclui taxas de marketplace, impostos e margem de lucro com designs nichados.", icon: Calculator, color: "bg-emerald-500" },
 ].map(tool => ({ ...tool, slug: slugify(tool.name) } as Tool));
 
 
@@ -190,7 +197,7 @@ const SEGMENTS = [
   {
     title: "Financeiro",
     description: "Controle de investimentos e métricas de performance.",
-    toolIds: ["calc", "percent", "interest", "loan", "netsalary", "inss", "thirteenth", "vacation", "overtime", "currency", "creditcard", "boleto"],
+    toolIds: ["calc", "percent", "discount", "profit-margin", "selling-price", "interest", "loan", "netsalary", "inss", "thirteenth", "vacation", "overtime", "currency", "creditcard", "boleto"],
     color: "emerald-500"
   },
   {
@@ -504,22 +511,27 @@ function HomeView() {
             <Link 
               key={sIdx} 
               to={`/categoria/${segment.slug}`}
-              className="group relative cursor-pointer rounded-[2rem] border border-white/5 p-8 transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] block"
+              className="group relative cursor-pointer rounded-[2rem] border border-white/10 p-8 transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] block overflow-hidden"
               style={{ 
-                 backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 3%, #05192d)`
+                 backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 8%, #0A1F35)`
               }}
             >
-              {/* Using unique hover border color based on segment color */}
+              {/* Decorative Glow */}
               <div 
-                className="absolute inset-0 rounded-[2rem] border border-transparent group-hover:border-current transition-colors pointer-events-none opacity-50" 
-                style={{ color: `var(--color-${segment.color})` }}
+                className="absolute -right-4 -top-4 h-24 w-24 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"
+                style={{ backgroundColor: `var(--color-${segment.color})` }}
+              />
+
+              {/* Border emphasis */}
+              <div 
+                className="absolute inset-0 rounded-[2rem] border border-transparent group-hover:border-white/20 transition-colors pointer-events-none" 
               />
               
               <div 
-                className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl transition-all group-hover:bg-current group-hover:text-black"
+                className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl transition-all group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(0,0,0,0.3)] shadow-lg"
                 style={{ 
-                  backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 10%, transparent)`,
-                  color: `var(--color-${segment.color})`
+                  backgroundColor: `var(--color-${segment.color})`,
+                  color: '#05192d'
                 }}
               >
                  {sIdx === 0 && <Clock className="h-7 w-7" />}
@@ -534,19 +546,19 @@ function HomeView() {
               </div>
               <div className="flex items-center gap-2 mb-2">
                  <span 
-                   className="text-[10px] font-black uppercase tracking-widest opacity-40"
+                   className="text-[10px] font-black uppercase tracking-widest opacity-60"
                    style={{ color: `var(--color-${segment.color})` }}
                  >
                     {(sIdx + 1).toString().padStart(2, '0')}
                  </span>
               </div>
-              <h3 className="text-2xl font-black tracking-tighter uppercase text-white leading-tight">{segment.title}</h3>
-              <p className="mt-3 text-slate-500 text-sm font-medium leading-relaxed">{segment.description}</p>
+              <h3 className="text-2xl font-black tracking-tighter uppercase text-white leading-tight group-hover:text-emerald-400 transition-colors">{segment.title}</h3>
+              <p className="mt-3 text-slate-400 text-sm font-medium leading-relaxed group-hover:text-slate-300 transition-colors">{segment.description}</p>
               <div 
-                className="mt-8 flex items-center text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity"
+                className="mt-8 flex items-center text-[10px] font-black uppercase tracking-widest translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all"
                 style={{ color: `var(--color-${segment.color})` }}
               >
-                  Ver Ferramentas <ChevronRight className="ml-1 h-3 w-3" />
+                  Explorar Agora <ChevronRight className="ml-1 h-3 w-3" />
               </div>
             </Link>
           );
@@ -601,28 +613,33 @@ function CategoryView() {
             <Link
               key={tool.id}
               to={`/ferramenta/${tool.slug}`}
-              className="group/tool cursor-pointer rounded-3xl border border-white/5 p-8 transition-all shadow-lg hover:shadow-2xl hover:scale-[1.02] block"
+              className="group/tool cursor-pointer rounded-3xl border border-white/10 p-8 transition-all shadow-lg hover:shadow-2xl hover:scale-[1.02] block relative overflow-hidden"
               style={{ 
-                borderColor: `color-mix(in srgb, var(--color-${segment.color}) 20%, transparent)`,
-                backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 3%, #05192d)`
+                backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 8%, #0A1F35)`
               } as any}
             >
+              {/* Decorative Glow */}
               <div 
-                className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl transition-all group-hover/tool:bg-current group-hover/tool:text-[#05192d]"
+                className="absolute -right-2 -top-2 h-16 w-16 rounded-full blur-2xl opacity-10 group-hover/tool:opacity-30 transition-opacity"
+                style={{ backgroundColor: `var(--color-${segment.color})` }}
+              />
+
+              <div 
+                className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl transition-all group-hover/tool:scale-110 shadow-lg"
                 style={{ 
-                  backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 10%, transparent)`,
-                  color: `var(--color-${segment.color})`
+                  backgroundColor: `var(--color-${segment.color})`,
+                  color: '#05192d'
                 }}
               >
                 <tool.icon className="h-6 w-6" />
               </div>
-              <h4 className="text-xl font-bold text-white tracking-tight">{tool.name}</h4>
+              <h4 className="text-xl font-bold text-white tracking-tight group-hover/tool:text-emerald-400 transition-colors">{tool.name}</h4>
               <p className="mt-2 text-sm text-slate-400 leading-relaxed font-medium">{tool.description}</p>
               <div 
-                className="mt-6 flex items-center text-[10px] font-black uppercase tracking-widest opacity-0 group-hover/tool:opacity-100 transition-opacity"
+                className="mt-6 flex items-center text-[10px] font-black uppercase tracking-widest translate-y-1 opacity-0 group-hover/tool:translate-y-0 group-hover/tool:opacity-100 transition-all"
                 style={{ color: `var(--color-${segment.color})` }}
               >
-                 Abrir <ChevronRight className="ml-1 h-3 w-3" />
+                 Acessar Ferramenta <ChevronRight className="ml-1 h-3 w-3" />
               </div>
             </Link>
           );
@@ -652,9 +669,9 @@ function ToolView() {
         <ChevronRight className="mr-1 h-4 w-4 rotate-180" /> Voltar
       </button>
 
-      <div className="rounded-3xl border border-white/5 bg-[#14283b] p-6 sm:p-12 shadow-2xl relative overflow-hidden min-h-[400px]">
-        <div className="absolute top-0 right-0 p-8 opacity-5">
-           <tool.icon className="h-48 w-48" />
+      <div className="rounded-[2.5rem] border border-white/10 bg-[#0A1F35] p-6 sm:p-12 shadow-2xl relative overflow-hidden min-h-[400px]">
+        <div className="absolute top-0 right-0 p-8 opacity-[0.03]">
+           <tool.icon className="h-64 w-64" />
         </div>
         <div className="relative z-10">
           <ToolRenderer id={tool.id as ToolId} />
@@ -764,6 +781,9 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "font": return <FontIdentifierTool />;
           case "smart-checklist": return <SmartChecklistTool />;
           case "loan": return <LoanCalculatorTool />;
+          case "discount": return <DiscountCalculatorTool />;
+          case "profit-margin": return <ProfitMarginCalculatorTool />;
+          case "selling-price": return <SellingPriceCalculatorTool />;
           default: return null;
         }
       })()}
