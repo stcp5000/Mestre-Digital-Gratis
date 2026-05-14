@@ -99,9 +99,10 @@ const ContrastSimulatorTool = lazy(() => import("./components/tools/ContrastSimu
 const ColorPaletteTool = lazy(() => import("./components/tools/ColorPaletteTool"));
 const ImageColorPickerTool = lazy(() => import("./components/tools/ImageColorPickerTool"));
 const FontIdentifierTool = lazy(() => import("./components/tools/FontIdentifierTool"));
+const SmartChecklistTool = lazy(() => import("./components/tools/SmartChecklistTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font" | "smart-checklist";
 
 interface Tool {
   id: ToolId;
@@ -172,6 +173,7 @@ const TOOLS: Tool[] = [
   { id: "palette", name: "Paletas com Simulador de Daltonismo", description: "Gere harmonia de cores e visualize como diferentes tipos de daltonismo afetam seu design.", icon: Brush, color: "bg-violet-500" },
   { id: "imagecolor", name: "Extrator de Cores de Imagem: Crie Paletas de Fotos", description: "Envie sua imagem e extraia cores instantaneamente. Descubra códigos HEX, RGB e crie paletas profissionais a partir de fotos e artes.", icon: ImageIcon, color: "bg-rose-500" },
   { id: "font", name: "Identificador de Fontes em Imagens: What Font?", description: "Descubra qual fonte está em uma imagem ou screenshot. Identificação visual de tipografias e sugestão de fontes similares gratuitas.", icon: Search, color: "bg-indigo-500" },
+  { id: "smart-checklist", name: "Checklist Inteligente: Gerador de Listas Nichadas", description: "Crie checklists personalizados para SEO, Viagens, Compras e Startups. Organize tarefas com designs exclusivos e modelos otimizados.", icon: CheckSquare, color: "bg-emerald-500" },
 ].map(tool => ({ ...tool, slug: slugify(tool.name) } as Tool));
 
 
@@ -179,7 +181,7 @@ const SEGMENTS = [
   {
     title: "Produtividade",
     description: "Organize sua rotina e maximize seu tempo.",
-    toolIds: ["hours", "checklist", "pomodoro", "worldclock", "stopwatch", "timer"],
+    toolIds: ["hours", "checklist", "smart-checklist", "pomodoro", "worldclock", "stopwatch", "timer"],
     color: "cyan-500"
   },
   {
@@ -757,6 +759,7 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "palette": return <ColorPaletteTool />;
           case "imagecolor": return <ImageColorPickerTool />;
           case "font": return <FontIdentifierTool />;
+          case "smart-checklist": return <SmartChecklistTool />;
           default: return null;
         }
       })()}

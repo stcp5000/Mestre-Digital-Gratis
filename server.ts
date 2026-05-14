@@ -67,6 +67,34 @@ app.post("/api/spell-check", async (req, res) => {
   }
 });
 
+app.post("/api/checklist/suggest", async (req, res) => {
+  const { topic } = req.body;
+  if (!topic) {
+    return res.status(400).json({ error: "Topic is required" });
+  }
+
+  try {
+    const prompt = `Você é um especialista em produtividade. Crie uma lista de até 10 tarefas essenciais para um checklist sobre o seguinte tema: "${topic}".
+    Para cada tarefa, sugira também uma duração aproximada (ex: "15 min", "1 hora").
+    Retorne o resultado estritamente no formato JSON como um array de objetos: [{"text": "nome da tarefa", "duration": "duração"}].`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      }
+    });
+    
+    // Parse the JSON directly if possible, or return the text for the client to parse
+    const data = JSON.parse(response.text || "[]");
+    res.json({ suggestions: data });
+  } catch (error: any) {
+    console.error("Gemini Error:", error);
+    res.status(500).json({ error: "Failed to generate suggestions" });
+  }
+});
+
 async function startServer() {
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
