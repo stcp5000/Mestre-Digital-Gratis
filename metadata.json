@@ -1,6 +1,6 @@
 {
   "name": "Mestre Digital Grátis",
-  "description": "Hub de ferramentas digitais gratuitas: QR Code, Hashtags, Calculadoras e mais.",
+  "description": "Hub centralizado com mais de 40 ferramentas digitais gratuitas: QR Code, Calculadoras Financeiras, Saúde, Social Media e Desenvolvimento.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -39,6 +39,7 @@ import {
   Users
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, Link } from "react-router-dom";
 
 // --- Lazy loaded tool components ---
 const QRCodeTool = lazy(() => import("./components/tools/QRCodeTool"));
@@ -90,55 +91,64 @@ type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" |
 interface Tool {
   id: ToolId;
   name: string;
+  slug: string;
   description: string;
   icon: any;
   color: string;
 }
 
+const slugify = (text: string) => 
+  text.toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '');
+
 const TOOLS: Tool[] = [
-  { id: "qrcode", name: "QR Code", description: "Gerador de códigos QR", icon: QrCode, color: "bg-emerald-500" },
-  { id: "hashtags", name: "Hashtags", description: "IA para hashtags virais", icon: Hash, color: "bg-emerald-500" },
-  { id: "calc", name: "Financeiro", description: "ROI, CPC e Performance", icon: Calculator, color: "bg-emerald-500" },
-  { id: "text", name: "Contador de Texto e Caracteres", description: "Contagem e transformação", icon: Type, color: "bg-emerald-500" },
-  { id: "colors", name: "Paletas", description: "Cores e Harmonias", icon: Palette, color: "bg-emerald-500" },
-  { id: "checklist", name: "Checklist", description: "Gestão de tarefas", icon: CheckSquare, color: "bg-emerald-500" },
-  { id: "hours", name: "Horas", description: "Jornada de trabalho", icon: Clock, color: "bg-emerald-500" },
-  { id: "whatsapp", name: "WhatsApp", description: "Link direto p/ Whats", icon: ExternalLink, color: "bg-emerald-500" },
-  { id: "json", name: "JSON", description: "Formatador e Validador", icon: Search, color: "bg-emerald-500" },
-  { id: "pomodoro", name: "Pomodoro", description: "Foco e Produtividade", icon: Clock, color: "bg-emerald-500" },
-  { id: "unit", name: "Unidades", description: "Conversor universal", icon: RefreshCw, color: "bg-emerald-500" },
-  { id: "dates", name: "Datas", description: "Cálculo entre dias", icon: Info, color: "bg-emerald-500" },
-  { id: "lorem", name: "Lorem Ipsum", description: "Gerador de preenchimento", icon: Type, color: "bg-emerald-500" },
-  { id: "case", name: "Conversor de Letras", description: "Maiúsculas e minúsculas", icon: Type, color: "bg-emerald-500" },
-  { id: "password", name: "Gerador de Senha", description: "Segurança avançada", icon: Shield, color: "bg-emerald-500" },
-  { id: "accents", name: "Removedor de Acentos", description: "Limpeza de caracteres", icon: Type, color: "bg-emerald-500" },
-  { id: "spelling", name: "Corretor IA", description: "Ortografia e Gramática", icon: Sparkles, color: "bg-emerald-500" },
-  { id: "inverter", name: "Inversor de Texto", description: "Inverter letras e palavras", icon: Repeat, color: "bg-emerald-500" },
-  { id: "html", name: "Conversor HTML", description: "Entidades e Tags HTML", icon: Code, color: "bg-emerald-500" },
-  { id: "sort", name: "Ordenador Alfabético", description: "Organizar listas e nomes", icon: SortAsc, color: "bg-emerald-500" },
-  { id: "words", name: "Número Extenso", description: "Escrever valores e moedas", icon: Hash, color: "bg-emerald-500" },
-  { id: "percent", name: "Porcentagem", description: "Cálculos e variações", icon: Percent, color: "bg-emerald-500" },
-  { id: "interest", name: "Juros Simples/Comp.", description: "Projeções Financeiras", icon: TrendingUp, color: "bg-emerald-500" },
-  { id: "netsalary", name: "Salário Líquido", description: "Cálculo de CLT e Descontos", icon: Banknote, color: "bg-emerald-500" },
-  { id: "inss", name: "INSS 2024/2025", description: "Contribuição e Alíquotas", icon: Shield, color: "bg-emerald-500" },
-  { id: "thirteenth", name: "Décimo Terceiro", description: "Cálculo de 13º Salário", icon: Calendar, color: "bg-emerald-500" },
-  { id: "vacation", name: "Cálculo de Férias", description: "Recibo e Terço Const.", icon: Palmtree, color: "bg-emerald-500" },
-  { id: "overtime", name: "Horas Extras", description: "Cálculo de Adicionais", icon: Clock, color: "bg-emerald-500" },
-  { id: "currency", name: "Conversor de Moedas", description: "Câmbio em tempo real", icon: Globe, color: "bg-emerald-500" },
-  { id: "bmi", name: "Cálculo de IMC", description: "Saúde e Peso Ideal", icon: Heart, color: "bg-rose-500" },
-  { id: "idealweight", name: "Peso Ideal Médio", description: "Metas de saúde e fórmulas", icon: Scale, color: "bg-rose-500" },
-  { id: "menstrual", name: "Ciclo Menstrual", description: "Calendário e Fertilidade", icon: Flower2, color: "bg-rose-500" },
-  { id: "pregnancy", name: "Calculadora Gestacional", description: "Idade e Milestones", icon: Baby, color: "bg-rose-500" },
-  { id: "dogage", name: "Idade Humana (Pet)", description: "Cálculo por porte e idade", icon: Dog, color: "bg-rose-500" },
-  { id: "catage", name: "Idade Humana (Gato)", description: "Projeção de anos felinos", icon: Cat, color: "bg-rose-500" },
-  { id: "temperature", name: "Temperatura", description: "Conversores e Sensação Térmica", icon: Thermometer, color: "bg-orange-500" },
-  { id: "roman", name: "Números Romanos", description: "Decimal p/ Romano e vice-versa", icon: Scroll, color: "bg-amber-500" },
-  { id: "energyvolume", name: "Energia & Volume", description: "Conversões técnicas e físicas", icon: Zap, color: "bg-indigo-500" },
-  { id: "barcode", name: "Código de Barras", description: "Gerador multi-formato", icon: BarcodeIcon, color: "bg-blue-500" },
-  { id: "mockdata", name: "Dados Fictícios", description: "Massa de teste e perfis", icon: Users, color: "bg-blue-500" },
-  { id: "instagrambio", name: "Bios Instagram", description: "Ideias e fontes especiais", icon: Instagram, color: "bg-pink-500" },
-  { id: "cpf", name: "Validador de CPF", description: "Verificação e região fiscal", icon: Shield, color: "bg-blue-500" },
-];
+  { id: "qrcode", name: "Gerador de QR Code Online", description: "Crie códigos QR gratuitos para links, Wi-Fi, WhatsApp e muito mais rapidamente.", icon: QrCode, color: "bg-emerald-500" },
+  { id: "hashtags", name: "Gerador de Hashtags com IA", description: "Encontre as hashtags mais virais para Instagram, TikTok e redes sociais usando inteligência artificial.", icon: Hash, color: "bg-emerald-500" },
+  { id: "calc", name: "Calculadora de Marketing e ROI", description: "Calcule métricas essenciais como ROI, CPC, CTR e performance de campanhas digitais.", icon: Calculator, color: "bg-emerald-500" },
+  { id: "text", name: "Contador de Caracteres e Palavras", description: "Ferramenta online para contagem de texto, caracteres e análise de densidade de palavras.", icon: Type, color: "bg-emerald-500" },
+  { id: "colors", name: "Gerador de Paleta de Cores", description: "Crie harmonias, extraia cores de imagens e gere paletas modernas para web design.", icon: Palette, color: "bg-emerald-500" },
+  { id: "checklist", name: "Checklist Online e Gestão", description: "Organize suas tarefas diárias com uma lista de afazeres simples e eficiente.", icon: CheckSquare, color: "bg-emerald-500" },
+  { id: "hours", name: "Calculadora de Horas Trabalhadas", description: "Calcule sua jornada, somando e subtraindo horas de trabalho de forma automática.", icon: Clock, color: "bg-emerald-500" },
+  { id: "whatsapp", name: "Gerador de Link de WhatsApp", description: "Crie links diretos para seu número do WhatsApp com mensagem personalizada grátis.", icon: ExternalLink, color: "bg-emerald-500" },
+  { id: "json", name: "Formatador e Validador de JSON", description: "Ferramenta para formatar, validar e indentar códigos JSON para desenvolvedores.", icon: Search, color: "bg-emerald-500" },
+  { id: "pomodoro", name: "Timer Pomodoro Online", description: "Aumente sua produtividade usando a técnica Pomodoro para foco e gestão de tempo.", icon: Clock, color: "bg-emerald-500" },
+  { id: "unit", name: "Conversor de Unidades Universal", description: "Conversão de medidas de comprimento, massa, temperatura e volume em um só lugar.", icon: RefreshCw, color: "bg-emerald-500" },
+  { id: "dates", name: "Calculadora de Intervalo entre Datas", description: "Saiba quantos dias, meses ou anos existem entre duas datas específicas.", icon: Info, color: "bg-emerald-500" },
+  { id: "lorem", name: "Gerador de Lorem Ipsum Online", description: "Gere textos de marcação (placeholder) para layouts e designs com personalização.", icon: Type, color: "bg-emerald-500" },
+  { id: "case", name: "Conversor de Letras (Maiúsculas/Minúsculas)", description: "Mude textos para maiúsculas, minúsculas ou título capitalizado instantaneamente.", icon: Type, color: "bg-emerald-500" },
+  { id: "password", name: "Gerador de Senha Segura", description: "Crie senhas fortes e aleatórias para proteger suas contas e redes sociais.", icon: Shield, color: "bg-emerald-500" },
+  { id: "accents", name: "Removedor de Acentos Online", description: "Limpe acentuação e caracteres especiais de textos para sistemas e códigos.", icon: Type, color: "bg-emerald-500" },
+  { id: "spelling", name: "Corretor Ortográfico com IA", description: "Verifique e corrija gramática e ortografia de textos em português com auxílio de IA.", icon: Sparkles, color: "bg-emerald-500" },
+  { id: "inverter", name: "Inversor de Texto e Palavras", description: "Inverta a ordem das letras ou das palavras de qualquer frase online.", icon: Repeat, color: "bg-emerald-500" },
+  { id: "html", name: "Conversor de Entidades HTML", description: "Codifique ou decodifique caracteres especiais e tags HTML de forma simples.", icon: Code, color: "bg-emerald-500" },
+  { id: "sort", name: "Ordenador de Listas Alfabético", description: "Coloque listas de nomes, produtos ou tarefas em ordem alfabética automaticamente.", icon: SortAsc, color: "bg-emerald-500" },
+  { id: "words", name: "Conversor de Número para Extenso", description: "Transforme valores numéricos em palavras, ideal para cheques e documentos.", icon: Hash, color: "bg-emerald-500" },
+  { id: "percent", name: "Calculadora de Porcentagem", description: "Calcule descontos, aumentos e variações percentuais de forma fácil e rápida.", icon: Percent, color: "bg-emerald-500" },
+  { id: "interest", name: "Calculadora de Juros Simples e Compostos", description: "Simule rendimentos financeiros e projeções de juros para investimentos.", icon: TrendingUp, color: "bg-emerald-500" },
+  { id: "netsalary", name: "Calculadora de Salário Líquido CLT", description: "Simule seu salário líquido após descontos de INSS, IRRF e benefícios.", icon: Banknote, color: "bg-emerald-500" },
+  { id: "inss", name: "Calculadora de INSS 2024/2025", description: "Veja quanto será descontado da sua folha de pagamento para a previdência social.", icon: Shield, color: "bg-emerald-500" },
+  { id: "thirteenth", name: "Calculadora de Décimo Terceiro Salário", description: "Saiba o valor das parcelas do seu 13º salário com base no tempo trabalhado.", icon: Calendar, color: "bg-emerald-500" },
+  { id: "vacation", name: "Calculadora de Férias e 1/3 Constitucional", description: "Calcule o valor bruto e líquido das suas férias com o terço constitucional.", icon: Palmtree, color: "bg-emerald-500" },
+  { id: "overtime", name: "Calculadora de Horas Extras Online", description: "Contabilize quanto você deve receber por horas adicionais trabalhadas no mês.", icon: Clock, color: "bg-emerald-500" },
+  { id: "currency", name: "Conversor de Moedas e Câmbio", description: "Câmbio comercial de Dólar, Euro e outras moedas em tempo real para o Real.", icon: Globe, color: "bg-emerald-500" },
+  { id: "bmi", name: "Calculadora de IMC Grátis", description: "Calcule seu Índice de Massa Corporal e saiba se você está no seu peso ideal.", icon: Heart, color: "bg-rose-500" },
+  { id: "idealweight", name: "Simulador de Peso Ideal Online", description: "Descubra qual a faixa de peso saudável recomendada para sua altura e idade.", icon: Scale, color: "bg-rose-500" },
+  { id: "menstrual", name: "Calendário do Ciclo Menstrual", description: "Acompanhe seu ciclo, preveja menstruação e saiba seus dias férteis e ovulação.", icon: Flower2, color: "bg-rose-500" },
+  { id: "pregnancy", name: "Calculadora de Gravidez e Gestação", description: "Calcule a idade gestacional e a data provável do parto (DPP) com precisão.", icon: Baby, color: "bg-rose-500" },
+  { id: "dogage", name: "Calculadora de Idade Canina (Cachorro)", description: "Converta os anos do seu cão em idade humana de acordo com o porte e raça.", icon: Dog, color: "bg-rose-500" },
+  { id: "catage", name: "Calculadora de Idade Felina (Gato)", description: "Saiba quantos 'anos humanos' o seu gato tem com base na idade real dele.", icon: Cat, color: "bg-rose-500" },
+  { id: "temperature", name: "Conversor de Temperatura Online", description: "Transforme Celsius em Fahrenheit ou Kelvin e vice-versa instantaneamente.", icon: Thermometer, color: "bg-orange-500" },
+  { id: "roman", name: "Conversor de Números Romanos", description: "Transforme algarismos decimais em romanos e aprenda a numeração antiga.", icon: Scroll, color: "bg-amber-500" },
+  { id: "energyvolume", name: "Conversor de Energia e Volume", description: "Conversões técnicas de unidades físicas para engenharia e uso doméstico.", icon: Zap, color: "bg-indigo-500" },
+  { id: "barcode", name: "Gerador de Código de Barras Online", description: "Crie códigos de barras em diversos formatos para produtos e etiquetas grátis.", icon: BarcodeIcon, color: "bg-blue-500" },
+  { id: "mockdata", name: "Gerador de Dados para Testes (Fakes)", description: "Crie massa de dados fictícios, nomes, e-mails e perfis para desenvolvimento.", icon: Users, color: "bg-blue-500" },
+  { id: "instagrambio", name: "Gerador de Bios para Instagram", description: "Crie biografias criativas e use fontes especiais para destacar seu perfil.", icon: Instagram, color: "bg-pink-500" },
+  { id: "cpf", name: "Validador de CPF e Origem Fiscal", description: "Verifique se um CPF é válido e descubra o estado de origem da emissão.", icon: Shield, color: "bg-blue-500" },
+].map(tool => ({ ...tool, slug: slugify(tool.name) }));
+
 
 const SEGMENTS = [
   {
@@ -195,7 +205,8 @@ const SEGMENTS = [
     toolIds: ["bmi", "idealweight", "menstrual", "pregnancy", "dogage", "catage", "temperature"],
     color: "rose-500"
   }
-];
+].map(s => ({ ...s, slug: slugify(s.title) }));
+
 
 function LogoIcon() {
   return (
@@ -224,14 +235,16 @@ const useDebounce = (value: string, delay: number) => {
 
 // --- Main App Component ---
 export default function App() {
-  const [activeTool, setActiveTool] = useState<ToolId | null>(null);
-  const [activeSegment, setActiveSegment] = useState<number | null>(null);
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
+}
 
-  const resetNav = () => {
-    setActiveTool(null);
-    setActiveSegment(null);
-  };
+function AppContent() {
+  const navigate = useNavigate();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#05192d] font-sans text-white selection-green">
@@ -245,8 +258,8 @@ export default function App() {
             >
               <Menu className="h-6 w-6" />
             </button>
-            <div 
-              onClick={resetNav}
+            <Link 
+              to="/"
               className="group flex cursor-pointer items-center gap-3"
             >
               <div className="flex items-center gap-3">
@@ -258,24 +271,18 @@ export default function App() {
                   <span className="text-[10px] font-bold tracking-[0.3em] text-emerald-500 uppercase">Digital Grátis</span>
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
 
           <nav className="hidden items-center gap-8 md:flex text-sm">
             {SEGMENTS.slice(0, 5).map((segment, idx) => (
-              <button
+              <Link
                 key={idx}
-                onClick={() => {
-                  setActiveSegment(idx);
-                  setActiveTool(null);
-                }}
-                className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
-                  activeSegment === idx && !activeTool ? "" : "text-slate-400 hover:text-white"
-                }`}
-                style={activeSegment === idx && !activeTool ? { color: `var(--color-${segment.color})` } : {}}
+                to={`/categoria/${segment.slug}`}
+                className="text-[10px] font-black uppercase tracking-widest transition-colors text-slate-400 hover:text-white"
               >
                 {segment.title}
-              </button>
+              </Link>
             ))}
           </nav>
 
@@ -294,278 +301,297 @@ export default function App() {
       </header>
 
       {/* Sidebar Mobile */}
-      <AnimatePresence>
-        {isSidebarOpen && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSidebarOpen(false)}
-              className="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm md:hidden"
-            />
-            <motion.aside
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              className="fixed inset-y-0 left-0 z-[70] w-72 bg-[#0A0A0A] p-6 shadow-2xl border-r border-white/10 md:hidden"
-            >
-              <div className="mb-8 flex items-center justify-between">
-                <h2 className="text-lg font-bold">Menu</h2>
-                <button onClick={() => setSidebarOpen(false)} className="rounded-lg p-2 hover:bg-white/5">
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-              <div className="space-y-2">
-                <button
-                  onClick={() => { resetNav(); setSidebarOpen(false); }}
-                  className={`flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors ${!activeTool && !activeSegment ? 'bg-white/5 text-emerald-400' : 'text-slate-400'}`}
-                >
-                  <Search className="h-5 w-5" />
-                  <span className="font-bold">Início</span>
-                </button>
-                <div className="pt-4 pb-2 text-[10px] font-black uppercase tracking-widest text-slate-600 px-3">Categorias</div>
-                {SEGMENTS.map((segment, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      setActiveSegment(idx);
-                      setActiveTool(null);
-                      setSidebarOpen(false);
-                    }}
-                    className={`flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors ${
-                      activeSegment === idx && !activeTool ? "" : "hover:bg-white/5 text-slate-400"
-                    }`}
-                    style={activeSegment === idx && !activeTool ? { 
-                      backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 10%, transparent)`,
-                      color: `var(--color-${segment.color})` 
-                    } : {}}
-                  >
-                    <span className="font-medium">{segment.title}</span>
-                  </button>
-                ))}
-              </div>
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
+      <Sidebar isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <AnimatePresence mode="wait">
-          {!activeTool && activeSegment === null ? (
-            <motion.div
-              key="hero"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-16"
-            >
-              <div className="text-center md:text-left max-w-4xl py-10">
-                <motion.span 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="inline-block px-3 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold tracking-[0.2em] rounded border border-emerald-500/20 uppercase mb-6"
-                >
-                  100% GRATUITAS • RÁPIDAS • PRÁTICAS
-                </motion.span>
-                <h2 className="text-6xl font-extrabold tracking-tighter text-white sm:text-8xl leading-[0.85]">
-                  MESTRE DIGITAL <br /><span className="text-emerald-500 tracking-tighter uppercase italic text-shadow-glow">GRÁTIS.</span>
-                </h2>
-                <p className="mt-8 max-w-xl text-xl text-slate-400 leading-relaxed font-medium mx-auto md:mx-0">
-                  Soluções digitais inteligentes para facilitar sua rotina. <br />
-                  <span className="text-white/40">Escolha um segmento para começar.</span>
-                </p>
-              </div>
-
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 pb-12">
-                {SEGMENTS.map((segment, sIdx) => {
-                  return (
-                    <motion.div 
-                      key={sIdx} 
-                      whileHover={{ y: -10, scale: 1.02 }}
-                      onClick={() => setActiveSegment(sIdx)}
-                      className="group relative cursor-pointer rounded-[2rem] border border-white/5 p-8 transition-all shadow-xl hover:shadow-2xl"
-                      style={{ 
-                         backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 3%, #05192d)`
-                      }}
-                    >
-                      {/* Using unique hover border color based on segment color */}
-                      <div 
-                        className="absolute inset-0 rounded-[2rem] border border-transparent group-hover:border-current transition-colors pointer-events-none opacity-50" 
-                        style={{ color: `var(--color-${segment.color})` }}
-                      />
-                      
-                      <div 
-                        className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl transition-all group-hover:bg-current group-hover:text-black"
-                        style={{ 
-                          backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 10%, transparent)`,
-                          color: `var(--color-${segment.color})`
-                        }}
-                      >
-                         {/* Contextual Icon based on segment */}
-                         {sIdx === 0 && <Clock className="h-7 w-7" />}
-                         {sIdx === 1 && <Calculator className="h-7 w-7" />}
-                         {sIdx === 2 && <Hash className="h-7 w-7" />}
-                         {sIdx === 3 && <Type className="h-7 w-7" />}
-                         {sIdx === 4 && <Search className="h-7 w-7" />}
-                         {sIdx === 5 && <Palette className="h-7 w-7" />}
-                         {sIdx === 6 && <RefreshCw className="h-7 w-7" />}
-                         {sIdx === 7 && <Info className="h-7 w-7" />}
-                         {sIdx === 8 && <Heart className="h-7 w-7" />}
-                      </div>
-                      <div className="flex items-center gap-2 mb-2">
-                         <span 
-                           className="text-[10px] font-black uppercase tracking-widest opacity-40"
-                           style={{ color: `var(--color-${segment.color})` }}
-                         >
-                            {(sIdx + 1).toString().padStart(2, '0')}
-                         </span>
-                      </div>
-                      <h3 className="text-2xl font-black tracking-tighter uppercase text-white leading-tight">{segment.title}</h3>
-                      <p className="mt-3 text-slate-500 text-sm font-medium leading-relaxed">{segment.description}</p>
-                      <div 
-                        className="mt-8 flex items-center text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity"
-                        style={{ color: `var(--color-${segment.color})` }}
-                      >
-                          Ver Ferramentas <ChevronRight className="ml-1 h-3 w-3" />
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          ) : !activeTool && activeSegment !== null ? (
-            <motion.div
-              key="segment-view"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="space-y-12"
-            >
-              <button 
-                onClick={() => setActiveSegment(null)}
-                className="flex items-center text-xs font-black uppercase tracking-widest text-slate-500 hover:text-emerald-400 transition-colors"
-              >
-                <ChevronRight className="mr-1 h-4 w-4 rotate-180" /> Voltar ao Início
-              </button>
-
-              <div className="max-w-4xl">
-                 <div className="flex items-center gap-4 mb-4">
-                    <span 
-                      className="h-1 w-12 rounded-full" 
-                      style={{ backgroundColor: `var(--color-${SEGMENTS[activeSegment].color})` }}
-                    />
-                    <span 
-                      className="text-xs font-black uppercase tracking-[0.3em]"
-                      style={{ color: `var(--color-${SEGMENTS[activeSegment].color})` }}
-                    >
-                      Ferramentas de {SEGMENTS[activeSegment].title}
-                    </span>
-                 </div>
-                 <h2 className="text-5xl font-black tracking-tighter text-white uppercase">{SEGMENTS[activeSegment].title}</h2>
-                 <p className="mt-4 text-slate-400 text-lg font-medium">{SEGMENTS[activeSegment].description}</p>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {SEGMENTS[activeSegment].toolIds.map((toolId) => {
-                  const tool = TOOLS.find(t => t.id === toolId);
-                  if (!tool) return null;
-                  const segmentColor = SEGMENTS[activeSegment].color;
-                  return (
-                    <motion.div
-                      key={tool.id}
-                      whileHover={{ y: -5 }}
-                      onClick={() => setActiveTool(tool.id as ToolId)}
-                      className="group/tool cursor-pointer rounded-3xl border border-white/5 p-8 transition-all shadow-lg hover:shadow-2xl"
-                      style={{ 
-                        borderColor: `color-mix(in srgb, var(--color-${segmentColor}) 20%, transparent)`,
-                        backgroundColor: `color-mix(in srgb, var(--color-${segmentColor}) 3%, #05192d)`
-                      } as any}
-                    >
-                      <div 
-                        className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl transition-all group-hover/tool:bg-current group-hover/tool:text-[#05192d]"
-                        style={{ 
-                          backgroundColor: `color-mix(in srgb, var(--color-${segmentColor}) 10%, transparent)`,
-                          color: `var(--color-${segmentColor})`
-                        }}
-                      >
-                        <tool.icon className="h-6 w-6" />
-                      </div>
-                      <h4 className="text-xl font-bold text-white tracking-tight">{tool.name}</h4>
-                      <p className="mt-2 text-sm text-slate-400 leading-relaxed font-medium">{tool.description}</p>
-                      <div 
-                        className="mt-6 flex items-center text-[10px] font-black uppercase tracking-widest opacity-0 group-hover/tool:opacity-100 transition-opacity"
-                        style={{ color: `var(--color-${segmentColor})` }}
-                      >
-                         Abrir <ChevronRight className="ml-1 h-3 w-3" />
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="tool-view"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="max-w-5xl mx-auto"
-            >
-              <button 
-                onClick={() => setActiveTool(null)}
-                className="mb-8 flex items-center text-xs font-black uppercase tracking-widest text-slate-500 hover:text-emerald-400 transition-colors"
-              >
-                <ChevronRight className="mr-1 h-4 w-4 rotate-180" /> Voltar para a Categoria
-              </button>
-
-              <div className="rounded-3xl border border-white/5 bg-[#14283b] p-6 sm:p-12 shadow-2xl relative overflow-hidden min-h-[400px]">
-                <div className="absolute top-0 right-0 p-8 opacity-5">
-                   {activeTool && (() => {
-                     const tool = TOOLS.find(t => t.id === activeTool);
-                     return tool ? <tool.icon className="h-48 w-48" /> : null;
-                   })()}
-                </div>
-                <div className="relative z-10">
-                  <ToolRenderer id={activeTool as ToolId} />
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <Routes>
+          <Route path="/" element={<HomeView />} />
+          <Route path="/categoria/:categorySlug" element={<CategoryView />} />
+          <Route path="/ferramenta/:toolSlug" element={<ToolView />} />
+        </Routes>
       </main>
 
-      <footer className="mt-auto border-t border-white/5 bg-[#05192d] py-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-6 bg-emerald-500 rounded-sm flex items-center justify-center font-bold text-black text-xs">M</div>
-              <span className="text-sm font-bold tracking-tight">MESTRE DIGITAL GRÁTIS</span>
-            </div>
-            <p className="text-xs font-medium text-slate-500">
-              © 2026 Mestre Digital. Agilidade e eficiência quando você precisa.
-            </p>
-            <div className="flex gap-8 text-xs font-bold text-slate-500 uppercase tracking-widest items-center">
-              <a 
-                href="https://www.instagram.com/mestreferramentasdigitaisfree/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 hover:text-emerald-400 transition-colors"
-                title="Instagram"
-              >
-                <Instagram className="h-4 w-4" />
-                <span className="hidden sm:inline">Instagram</span>
-              </a>
-              <a href="#" className="hover:text-emerald-400 transition-colors">Termos</a>
-              <a href="#" className="hover:text-emerald-400 transition-colors">Privacidade</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
+
+function Sidebar({ isSidebarOpen, setSidebarOpen }: { isSidebarOpen: boolean, setSidebarOpen: (o: boolean) => void }) {
+  return (
+    <AnimatePresence>
+      {isSidebarOpen && (
+        <>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSidebarOpen(false)}
+            className="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm md:hidden"
+          />
+          <motion.aside
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            className="fixed inset-y-0 left-0 z-[70] w-72 bg-[#0A0A0A] p-6 shadow-2xl border-r border-white/10 md:hidden"
+          >
+            <div className="mb-8 flex items-center justify-between">
+              <h2 className="text-lg font-bold">Menu</h2>
+              <button onClick={() => setSidebarOpen(false)} className="rounded-lg p-2 hover:bg-white/5">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="space-y-2">
+              <Link
+                to="/"
+                onClick={() => setSidebarOpen(false)}
+                className="flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors text-slate-400 hover:bg-white/5"
+              >
+                <Search className="h-5 w-5" />
+                <span className="font-bold">Início</span>
+              </Link>
+              <div className="pt-4 pb-2 text-[10px] font-black uppercase tracking-widest text-slate-600 px-3">Categorias</div>
+              {SEGMENTS.map((segment, idx) => (
+                <Link
+                  key={idx}
+                  to={`/categoria/${segment.slug}`}
+                  onClick={() => setSidebarOpen(false)}
+                  className="flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors text-slate-400 hover:bg-white/5 hover:text-white"
+                >
+                  <span className="font-medium">{segment.title}</span>
+                </Link>
+              ))}
+            </div>
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function HomeView() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="space-y-16"
+    >
+      <div className="text-center md:text-left max-w-4xl py-10">
+        <motion.span 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="inline-block px-3 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold tracking-[0.2em] rounded border border-emerald-500/20 uppercase mb-6"
+        >
+          100% GRATUITAS • RÁPIDAS • PRÁTICAS
+        </motion.span>
+        <h1 className="text-6xl font-extrabold tracking-tighter text-white sm:text-8xl leading-[0.85]">
+          MESTRE DIGITAL <br /><span className="text-emerald-500 tracking-tighter uppercase italic text-shadow-glow">GRÁTIS.</span>
+        </h1>
+        <p className="mt-8 max-w-xl text-xl text-slate-400 leading-relaxed font-medium mx-auto md:mx-0">
+          O melhor hub de ferramentas digitais online e gratuitas. Rapidez, privacidade e eficiência para sua rotina de trabalho, estudos e saúde. <br />
+          <span className="text-white/40">Selecione uma categoria abaixo para acessar nossos utilitários.</span>
+        </p>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 pb-12">
+        {SEGMENTS.map((segment, sIdx) => {
+          return (
+            <Link 
+              key={sIdx} 
+              to={`/categoria/${segment.slug}`}
+              className="group relative cursor-pointer rounded-[2rem] border border-white/5 p-8 transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] block"
+              style={{ 
+                 backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 3%, #05192d)`
+              }}
+            >
+              {/* Using unique hover border color based on segment color */}
+              <div 
+                className="absolute inset-0 rounded-[2rem] border border-transparent group-hover:border-current transition-colors pointer-events-none opacity-50" 
+                style={{ color: `var(--color-${segment.color})` }}
+              />
+              
+              <div 
+                className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl transition-all group-hover:bg-current group-hover:text-black"
+                style={{ 
+                  backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 10%, transparent)`,
+                  color: `var(--color-${segment.color})`
+                }}
+              >
+                 {sIdx === 0 && <Clock className="h-7 w-7" />}
+                 {sIdx === 1 && <Calculator className="h-7 w-7" />}
+                 {sIdx === 2 && <Hash className="h-7 w-7" />}
+                 {sIdx === 3 && <Type className="h-7 w-7" />}
+                 {sIdx === 4 && <Search className="h-7 w-7" />}
+                 {sIdx === 5 && <Palette className="h-7 w-7" />}
+                 {sIdx === 6 && <RefreshCw className="h-7 w-7" />}
+                 {sIdx === 7 && <Info className="h-7 w-7" />}
+                 {sIdx === 8 && <Heart className="h-7 w-7" />}
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                 <span 
+                   className="text-[10px] font-black uppercase tracking-widest opacity-40"
+                   style={{ color: `var(--color-${segment.color})` }}
+                 >
+                    {(sIdx + 1).toString().padStart(2, '0')}
+                 </span>
+              </div>
+              <h3 className="text-2xl font-black tracking-tighter uppercase text-white leading-tight">{segment.title}</h3>
+              <p className="mt-3 text-slate-500 text-sm font-medium leading-relaxed">{segment.description}</p>
+              <div 
+                className="mt-8 flex items-center text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ color: `var(--color-${segment.color})` }}
+              >
+                  Ver Ferramentas <ChevronRight className="ml-1 h-3 w-3" />
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
+function CategoryView() {
+  const { categorySlug } = useParams();
+  const segment = SEGMENTS.find(s => s.slug === categorySlug);
+
+  if (!segment) return <div className="text-center py-20 text-slate-400">Categoria não encontrada.</div>;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      className="space-y-12"
+    >
+      <Link 
+        to="/"
+        className="flex items-center text-xs font-black uppercase tracking-widest text-slate-500 hover:text-emerald-400 transition-colors w-fit"
+      >
+        <ChevronRight className="mr-1 h-4 w-4 rotate-180" /> Voltar ao Início
+      </Link>
+
+      <div className="max-w-4xl">
+         <div className="flex items-center gap-4 mb-4">
+            <span 
+              className="h-1 w-12 rounded-full" 
+              style={{ backgroundColor: `var(--color-${segment.color})` }}
+            />
+            <span 
+              className="text-xs font-black uppercase tracking-[0.3em]"
+              style={{ color: `var(--color-${segment.color})` }}
+            >
+              Ferramentas de {segment.title}
+            </span>
+         </div>
+         <h2 className="text-5xl font-black tracking-tighter text-white uppercase">{segment.title}</h2>
+         <p className="mt-4 text-slate-400 text-lg font-medium">{segment.description}</p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {segment.toolIds.map((toolId) => {
+          const tool = TOOLS.find(t => t.id === toolId);
+          if (!tool) return null;
+          return (
+            <Link
+              key={tool.id}
+              to={`/ferramenta/${tool.slug}`}
+              className="group/tool cursor-pointer rounded-3xl border border-white/5 p-8 transition-all shadow-lg hover:shadow-2xl hover:scale-[1.02] block"
+              style={{ 
+                borderColor: `color-mix(in srgb, var(--color-${segment.color}) 20%, transparent)`,
+                backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 3%, #05192d)`
+              } as any}
+            >
+              <div 
+                className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl transition-all group-hover/tool:bg-current group-hover/tool:text-[#05192d]"
+                style={{ 
+                  backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 10%, transparent)`,
+                  color: `var(--color-${segment.color})`
+                }}
+              >
+                <tool.icon className="h-6 w-6" />
+              </div>
+              <h4 className="text-xl font-bold text-white tracking-tight">{tool.name}</h4>
+              <p className="mt-2 text-sm text-slate-400 leading-relaxed font-medium">{tool.description}</p>
+              <div 
+                className="mt-6 flex items-center text-[10px] font-black uppercase tracking-widest opacity-0 group-hover/tool:opacity-100 transition-opacity"
+                style={{ color: `var(--color-${segment.color})` }}
+              >
+                 Abrir <ChevronRight className="ml-1 h-3 w-3" />
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
+function ToolView() {
+  const { toolSlug } = useParams();
+  const tool = TOOLS.find(t => t.slug === toolSlug);
+
+  if (!tool) return <div className="text-center py-20 text-slate-400">Ferramenta não encontrada.</div>;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      className="max-w-5xl mx-auto"
+    >
+      <button 
+        onClick={() => window.history.back()}
+        className="mb-8 flex items-center text-xs font-black uppercase tracking-widest text-slate-500 hover:text-emerald-400 transition-colors"
+      >
+        <ChevronRight className="mr-1 h-4 w-4 rotate-180" /> Voltar
+      </button>
+
+      <div className="rounded-3xl border border-white/5 bg-[#14283b] p-6 sm:p-12 shadow-2xl relative overflow-hidden min-h-[400px]">
+        <div className="absolute top-0 right-0 p-8 opacity-5">
+           <tool.icon className="h-48 w-48" />
+        </div>
+        <div className="relative z-10">
+          <ToolRenderer id={tool.id as ToolId} />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="mt-auto border-t border-white/5 bg-[#05192d] py-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 bg-emerald-500 rounded-sm flex items-center justify-center font-bold text-black text-xs">M</div>
+            <span className="text-sm font-bold tracking-tight">MESTRE DIGITAL GRÁTIS</span>
+          </div>
+          <p className="text-xs font-medium text-slate-500">
+            © 2026 Mestre Digital. Agilidade e eficiência quando você precisa.
+          </p>
+          <div className="flex gap-8 text-xs font-bold text-slate-500 uppercase tracking-widest items-center">
+            <a 
+              href="https://www.instagram.com/mestreferramentasdigitaisfree/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 hover:text-emerald-400 transition-colors"
+              title="Instagram"
+            >
+              <Instagram className="h-4 w-4" />
+              <span className="hidden sm:inline">Instagram</span>
+            </a>
+            <a href="#" className="hover:text-emerald-400 transition-colors">Termos</a>
+            <a href="#" className="hover:text-emerald-400 transition-colors">Privacidade</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
 
 // --- Tool Router ---
 function ToolRenderer({ id }: { id: ToolId }) {
