@@ -43,7 +43,16 @@ import {
   Users,
   Building2,
   CreditCard,
-  Timer
+  Timer,
+  UserCheck,
+  ShieldCheck,
+  Flame,
+  Utensils,
+  Droplets,
+  Trophy,
+  CircleCheck,
+  ShoppingCart,
+  Lightbulb
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, Link } from "react-router-dom";
@@ -106,9 +115,18 @@ const LoanCalculatorTool = lazy(() => import("./components/tools/LoanCalculatorT
 const DiscountCalculatorTool = lazy(() => import("./components/tools/DiscountCalculatorTool"));
 const ProfitMarginCalculatorTool = lazy(() => import("./components/tools/ProfitMarginCalculatorTool"));
 const SellingPriceCalculatorTool = lazy(() => import("./components/tools/SellingPriceCalculatorTool"));
+const CommissionCalculatorTool = lazy(() => import("./components/tools/CommissionCalculatorTool"));
+const EmergencyFundSimulatorTool = lazy(() => import("./components/tools/EmergencyFundSimulatorTool"));
+const CalorieCalculatorTool = lazy(() => import("./components/tools/CalorieCalculatorTool"));
+const WaterConsumptionCalculatorTool = lazy(() => import("./components/tools/WaterConsumptionCalculatorTool"));
+const RunningPaceCalculatorTool = lazy(() => import("./components/tools/RunningPaceCalculatorTool"));
+const EventChecklistTool = lazy(() => import("./components/tools/EventChecklistTool"));
+const SmartShoppingListTool = lazy(() => import("./components/tools/SmartShoppingListTool"));
+const ColorConverterTool = lazy(() => import("./components/tools/ColorConverterTool"));
+const BrandNameGeneratorTool = lazy(() => import("./components/tools/BrandNameGeneratorTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font" | "smart-checklist" | "loan" | "discount" | "profit-margin" | "selling-price";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font" | "smart-checklist" | "loan" | "discount" | "profit-margin" | "selling-price" | "commission" | "emergency-fund" | "daily-calories" | "water-consumption" | "running-pace" | "event-checklist" | "smart-shopping-list" | "color-converter" | "brand-name-generator";
 
 interface Tool {
   id: ToolId;
@@ -184,6 +202,15 @@ const TOOLS: Tool[] = [
   { id: "discount", name: "Calculadora de Desconto Online: Varejo e Liquidação", description: "Calcule descontos porcentuais, cupons acumulativos e economia real. Versões para e-commerce e varejo físico com design personalizável.", icon: Tag, color: "bg-rose-500" },
   { id: "profit-margin", name: "Calculadora de Margem de Lucro: Markup e Lucro Líquido", description: "Calcule margem operacional, markup e lucro líquido para varejo, SaaS e indústria. Tome decisões de precificação baseadas em dados reais.", icon: TrendingUp, color: "bg-emerald-500" },
   { id: "selling-price", name: "Calculadora de Preço de Venda: Mark-up e Lucro Ideal", description: "Calcule o preço de venda perfeito para produtos e serviços. Inclui taxas de marketplace, impostos e margem de lucro com designs nichados.", icon: Calculator, color: "bg-emerald-500" },
+  { id: "commission", name: "Calculadora de Comissão de Vendas: Afiliados e Corretores", description: "Calcule rapidamente comissões de vendas, corretagem imobiliária e programas de afiliados. Defina bônus, metas e divisões com designs exclusivos.", icon: UserCheck, color: "bg-emerald-500" },
+  { id: "emergency-fund", name: "Simulador de Reserva de Emergência: Segurança Financeira", description: "Calcule quanto você precisa para sua reserva de emergência com base em seu perfil (CLT, Autônomo, Família). Simulador completo com tempo estimado e metas.", icon: ShieldCheck, color: "bg-emerald-500" },
+  { id: "daily-calories", name: "Calculadora de Calorias Diárias: TDEE e Macronutrientes", description: "Calcule suas necessidades calóricas diárias para emagrecer, manter ou ganhar massa. Descubra seu TDEE e divisão de macros por objetivo com designs exclusivos.", icon: Flame, color: "bg-rose-500" },
+  { id: "water-consumption", name: "Calculadora de Consumo de Água: Meta Diária e Hidratação", description: "Calcule a quantidade ideal de água para beber por dia com base no seu peso, nível de atividade e clima. Use designs exclusivos para saúde e performance.", icon: Droplets, color: "bg-rose-500" },
+  { id: "running-pace", name: "Calculadora de Ritmo de Corrida: Pace e Projeção de Prova", description: "Calcule seu pace (min/km), tempo total e preveja resultados para 5k, 10k e maratona. Simulador completo com versões para iniciantes e atletas de elite.", icon: Trophy, color: "bg-rose-500" },
+  { id: "event-checklist", name: "Checklist de Casamento e Eventos: Planejamento Completo", description: "Organize seu casamento, aniversário ou evento corporativo com um checklist inteligente. Gerencie tarefas por categorias com designs românticos, clássicos ou tech.", icon: CircleCheck, color: "bg-indigo-500" },
+  { id: "smart-shopping-list", name: "Lista de Compras Inteligente com IA: Despensa e Mercado", description: "Crie listas de compras otimizadas com sugestões da IA para mercado, churrasco ou dieta. Controle gastos e categorias com designs exclusivos e divertidos.", icon: ShoppingCart, color: "bg-indigo-500" },
+  { id: "color-converter", name: "Conversor HEX / RGB / HSL: Design e Web Development", description: "Converta cores instantaneamente entre HEX, RGB e HSL. Gere paletas, verifique contraste e CMYK para print com designs web, UI e retrô.", icon: Palette, color: "bg-blue-500" },
+  { id: "brand-name-generator", name: "Gerador de Nomes para Marcas: Branding e Naming com IA", description: "Encontre o nome perfeito para sua empresa, startup ou canal. Gerador de nomes criativos com IA, nichos específicos (Tech, Creative, Wellness) e designs personalizáveis.", icon: Lightbulb, color: "bg-indigo-500" },
 ].map(tool => ({ ...tool, slug: slugify(tool.name) } as Tool));
 
 
@@ -191,13 +218,13 @@ const SEGMENTS = [
   {
     title: "Produtividade",
     description: "Organize sua rotina e maximize seu tempo.",
-    toolIds: ["hours", "checklist", "smart-checklist", "pomodoro", "worldclock", "stopwatch", "timer"],
+    toolIds: ["hours", "checklist", "smart-checklist", "event-checklist", "smart-shopping-list", "brand-name-generator", "pomodoro", "worldclock", "stopwatch", "timer"],
     color: "cyan-500"
   },
   {
     title: "Financeiro",
     description: "Controle de investimentos e métricas de performance.",
-    toolIds: ["calc", "percent", "discount", "profit-margin", "selling-price", "interest", "loan", "netsalary", "inss", "thirteenth", "vacation", "overtime", "currency", "creditcard", "boleto"],
+    toolIds: ["calc", "percent", "discount", "profit-margin", "selling-price", "commission", "emergency-fund", "interest", "loan", "netsalary", "inss", "thirteenth", "vacation", "overtime", "currency", "creditcard", "boleto"],
     color: "emerald-500"
   },
   {
@@ -221,7 +248,7 @@ const SEGMENTS = [
   {
     title: "Web Design e Imagem",
     description: "Crie identidades visuais impactantes.",
-    toolIds: ["colors", "contrast", "palette", "imagecolor", "font"],
+    toolIds: ["colors", "contrast", "palette", "imagecolor", "font", "color-converter"],
     color: "violet-500"
   },
   {
@@ -239,7 +266,7 @@ const SEGMENTS = [
   {
     title: "Saúde",
     description: "Monitore seu bem-estar e indicadores físicos.",
-    toolIds: ["bmi", "idealweight", "menstrual", "pregnancy", "dogage", "catage", "temperature"],
+    toolIds: ["bmi", "idealweight", "daily-calories", "water-consumption", "running-pace", "menstrual", "pregnancy", "dogage", "catage", "temperature"],
     color: "rose-500"
   }
 ].map(s => ({ ...s, slug: slugify(s.title) }));
@@ -784,6 +811,15 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "discount": return <DiscountCalculatorTool />;
           case "profit-margin": return <ProfitMarginCalculatorTool />;
           case "selling-price": return <SellingPriceCalculatorTool />;
+          case "commission": return <CommissionCalculatorTool />;
+          case "emergency-fund": return <EmergencyFundSimulatorTool />;
+          case "daily-calories": return <CalorieCalculatorTool />;
+          case "water-consumption": return <WaterConsumptionCalculatorTool />;
+          case "running-pace": return <RunningPaceCalculatorTool />;
+          case "event-checklist": return <EventChecklistTool />;
+          case "smart-shopping-list": return <SmartShoppingListTool />;
+          case "color-converter": return <ColorConverterTool />;
+          case "brand-name-generator": return <BrandNameGeneratorTool />;
           default: return null;
         }
       })()}

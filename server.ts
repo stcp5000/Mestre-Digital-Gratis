@@ -95,6 +95,69 @@ app.post("/api/checklist/suggest", async (req, res) => {
   }
 });
 
+app.post("/api/brand-names/generate", async (req, res) => {
+  const { keywords, niche, tone } = req.body;
+  if (!keywords) {
+    return res.status(400).json({ error: "Keywords are required" });
+  }
+
+  try {
+    const prompt = `Você é um especialista em branding e naming profissional. Gere uma lista de 8 nomes criativos para uma nova marca baseada no seguinte conceito: "${keywords}".
+    O nicho de mercado é: "${niche}".
+    O tom da marca deve ser: "${tone}".
+
+    Para cada nome sugerido, forneça também uma tagline curta (slogan) e o tipo de nome (ex: Abstrato, Composto, Neologismo, Descritivo).
+    
+    Retorne o resultado estritamente no formato JSON como um objeto com a chave "names":
+    {
+      "names": [
+        {"name": "Nome", "tagline": "Slogan criativo", "type": "Tipo de nome"}
+      ]
+    }`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      }
+    });
+    
+    const data = JSON.parse(response.text || '{"names": []}');
+    res.json(data);
+  } catch (error: any) {
+    console.error("Gemini Naming Error:", error);
+    res.status(500).json({ error: "Failed to generate brand names" });
+  }
+});
+
+app.post("/api/shopping-list/suggest", async (req, res) => {
+  const { topic } = req.body;
+  if (!topic) {
+    return res.status(400).json({ error: "Topic is required" });
+  }
+
+  try {
+    const prompt = `Você é um assistente de compras inteligente. Sugira uma lista de até 12 itens essenciais para uma lista de compras com o seguinte contexto: "${topic}".
+    Organize por categorias (ex: Hortifruti, Carnes, Limpeza, etc).
+    Retorne o resultado estritamente no formato JSON como um array de objetos: [{"name": "nome do item", "category": "categoria"}].`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      }
+    });
+    
+    const data = JSON.parse(response.text || "[]");
+    res.json({ suggestions: data });
+  } catch (error: any) {
+    console.error("Gemini Error:", error);
+    res.status(500).json({ error: "Failed to generate shopping list suggestions" });
+  }
+});
+
 async function startServer() {
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
