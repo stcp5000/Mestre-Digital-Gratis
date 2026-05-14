@@ -21,7 +21,14 @@ const ai = new GoogleGenAI({
   }
 });
 
+// Simple visitor counter (in-memory)
+let visitorCount = 1240; // Starting with a base number to look better
+
 // API routes
+app.get("/api/visitor-count", (req, res) => {
+  visitorCount++;
+  res.json({ count: visitorCount });
+});
 app.post("/api/generate-hashtags", async (req, res) => {
   const { topic } = req.body;
   if (!topic) {

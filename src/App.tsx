@@ -709,13 +709,30 @@ function ToolView() {
 }
 
 function Footer() {
+  const [visitorCount, setVisitorCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/visitor-count")
+      .then(res => res.json())
+      .then(data => setVisitorCount(data.count))
+      .catch(err => console.error("Error fetching visitor count:", err));
+  }, []);
+
   return (
     <footer className="mt-auto border-t border-white/5 bg-[#05192d] py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
-          <div className="flex items-center gap-3">
-            <div className="w-6 h-6 bg-emerald-500 rounded-sm flex items-center justify-center font-bold text-black text-xs">M</div>
-            <span className="text-sm font-bold tracking-tight">MESTRE DIGITAL GRÁTIS</span>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 bg-emerald-500 rounded-sm flex items-center justify-center font-bold text-black text-xs">M</div>
+              <span className="text-sm font-bold tracking-tight">MESTRE DIGITAL GRÁTIS</span>
+            </div>
+            {visitorCount !== null && (
+              <div className="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
+                <Users className="h-3 w-3 text-emerald-500" />
+                <span>Visitantes: <span className="text-emerald-400">{visitorCount.toLocaleString()}</span></span>
+              </div>
+            )}
           </div>
           <p className="text-xs font-medium text-slate-500">
             © 2026 Mestre Digital. Agilidade e eficiência quando você precisa.
