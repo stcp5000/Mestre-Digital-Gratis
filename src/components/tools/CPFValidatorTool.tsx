@@ -135,7 +135,7 @@ export default function CPFValidatorTool() {
           }`}
         >
           <FileText className="h-4 w-4" />
-          Procesamento em Massa
+          Processamento em Massa
         </button>
       </div>
 

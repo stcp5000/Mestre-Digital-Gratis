@@ -36,7 +36,9 @@ import {
   Scroll,
   Zap,
   Barcode as BarcodeIcon,
-  Users
+  Users,
+  Building2,
+  CreditCard
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, Link } from "react-router-dom";
@@ -84,9 +86,11 @@ const BarcodeTool = lazy(() => import("./components/tools/BarcodeTool"));
 const MockDataTool = lazy(() => import("./components/tools/MockDataTool"));
 const InstagramBioTool = lazy(() => import("./components/tools/InstagramBioTool"));
 const CPFValidatorTool = lazy(() => import("./components/tools/CPFValidatorTool"));
+const CNPJValidatorTool = lazy(() => import("./components/tools/CNPJValidatorTool"));
+const CreditCardTool = lazy(() => import("./components/tools/CreditCardTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard";
 
 interface Tool {
   id: ToolId;
@@ -147,7 +151,9 @@ const TOOLS: Tool[] = [
   { id: "mockdata", name: "Gerador de Dados para Testes (Fakes)", description: "Crie massa de dados fictícios, nomes, e-mails e perfis para desenvolvimento.", icon: Users, color: "bg-blue-500" },
   { id: "instagrambio", name: "Gerador de Bios para Instagram", description: "Crie biografias criativas e use fontes especiais para destacar seu perfil.", icon: Instagram, color: "bg-pink-500" },
   { id: "cpf", name: "Validador de CPF e Origem Fiscal", description: "Verifique se um CPF é válido e descubra o estado de origem da emissão.", icon: Shield, color: "bg-blue-500" },
-].map(tool => ({ ...tool, slug: slugify(tool.name) }));
+  { id: "cnpj", name: "Validador de CNPJ Grátis", description: "Validação matemática de CNPJ, gerador para testes e processamento em lote.", icon: Building2, color: "bg-blue-500" },
+  { id: "creditcard", name: "Validador de Cartão de Crédito", description: "Verifique a validade (Luhn), bandeira e gere números de cartão para testes.", icon: CreditCard, color: "bg-blue-500" },
+].map(tool => ({ ...tool, slug: slugify(tool.name) } as Tool));
 
 
 const SEGMENTS = [
@@ -160,7 +166,7 @@ const SEGMENTS = [
   {
     title: "Financeiro",
     description: "Controle de investimentos e métricas de performance.",
-    toolIds: ["calc", "percent", "interest", "netsalary", "inss", "thirteenth", "vacation", "overtime", "currency"],
+    toolIds: ["calc", "percent", "interest", "netsalary", "inss", "thirteenth", "vacation", "overtime", "currency", "creditcard"],
     color: "emerald-500"
   },
   {
@@ -178,7 +184,7 @@ const SEGMENTS = [
   {
     title: "Técnico e Dev",
     description: "Utilitários essenciais para desenvolvedores.",
-    toolIds: ["json", "mockdata"],
+    toolIds: ["json", "mockdata", "cnpj"],
     color: "indigo-500"
   },
   {
@@ -190,7 +196,7 @@ const SEGMENTS = [
   {
     title: "Utilidades",
     description: "Conversores e cálculos gerais do dia a dia.",
-    toolIds: ["unit", "password", "roman", "energyvolume", "cpf"],
+    toolIds: ["unit", "password", "roman", "energyvolume", "cpf", "cnpj", "creditcard"],
     color: "blue-500"
   },
   {
@@ -648,6 +654,8 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "mockdata": return <MockDataTool />;
           case "instagrambio": return <InstagramBioTool />;
           case "cpf": return <CPFValidatorTool />;
+          case "cnpj": return <CNPJValidatorTool />;
+          case "creditcard": return <CreditCardTool />;
           default: return null;
         }
       })()}
