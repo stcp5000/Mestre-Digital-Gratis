@@ -287,18 +287,23 @@ const SEGMENTS = [
 ].map(s => ({ ...s, slug: slugify(s.title) }));
 
 
-function LogoIcon() {
+function LogoIcon({ className = "w-12 h-12" }: { className?: string }) {
   return (
-    <div className="relative flex h-12 w-12 items-center justify-center bg-white rounded-xl shadow-lg ring-1 ring-black/5 overflow-hidden">
-      <svg viewBox="0 0 100 100" className="w-10 h-10 fill-none">
-        {/* Main M Shape - Dark Navy */}
-        <path d="M20 80 V25 L50 65 L80 25 V80" stroke="#05192d" strokeWidth="14" strokeLinejoin="round" strokeLinecap="round" />
-        {/* Green Arrow/Checkmark Detail from logo */}
-        <path d="M42 60 L52 75 L85 30" stroke="#10b981" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" />
-        {/* Pixels/Squares from logo - simplified */}
-        <rect x="10" y="45" width="6" height="6" fill="#05192d" opacity="0.6" />
-        <rect x="5" y="55" width="4" height="4" fill="#05192d" opacity="0.4" />
-        <rect x="15" y="65" width="5" height="5" fill="#10b981" opacity="0.8" />
+    <div className={`relative flex items-center justify-center bg-white rounded-full shadow-soft ring-1 ring-black/5 overflow-hidden ${className}`}>
+      <svg viewBox="0 0 100 100" className="w-[80%] h-[80%] fill-none">
+        {/* Main Circle Outline - Gradient feel */}
+        <path d="M50 5 A45 45 0 1 1 49.99 5" stroke="#05192d" strokeWidth="2" strokeDasharray="140 100" strokeLinecap="round" />
+        
+        {/* The "M" Shape */}
+        <path d="M25 75 V35 L50 65 L75 35 V75" stroke="#05192d" strokeWidth="12" strokeLinejoin="round" strokeLinecap="round" />
+        
+        {/* Checkmark Arrow Detail */}
+        <path d="M45 60 L55 75 L85 35" stroke="#10b981" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" />
+        
+        {/* Pixel/Tech elements */}
+        <rect x="15" y="45" width="5" height="5" fill="#05192d" />
+        <rect x="10" y="55" width="4" height="4" fill="#05192d" opacity="0.6" />
+        <rect x="20" y="60" width="4" height="4" fill="#10b981" />
       </svg>
     </div>
   );
@@ -351,9 +356,7 @@ function AppContent() {
               to="/"
               className="flex items-center gap-3 group"
             >
-              <div className="w-12 h-12 flex items-center justify-center overflow-hidden rounded-full shadow-soft transition-transform group-hover:scale-105">
-                <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
-              </div>
+              <LogoIcon className="w-12 h-12 transition-transform group-hover:scale-105" />
               <h1 className="text-xl font-bold tracking-tight text-brand-text font-display">
                 Mestre Digital Grátis
               </h1>
@@ -368,8 +371,9 @@ function AppContent() {
               href="https://www.instagram.com/mestreferramentasdigitaisfree/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-[15px] font-medium text-brand-muted hover:text-brand-primary transition-colors"
+              className="text-[15px] font-medium text-brand-muted hover:text-brand-primary transition-colors flex items-center gap-2"
             >
+              <Instagram className="h-4 w-4" />
               Instagram
             </a>
           </nav>
@@ -416,9 +420,7 @@ function Sidebar({ isSidebarOpen, setSidebarOpen }: { isSidebarOpen: boolean, se
           >
             <div className="mb-8 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 flex items-center justify-center overflow-hidden rounded-full shadow-soft">
-                  <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
-                </div>
+                <LogoIcon className="w-10 h-10" />
                 <h2 className="text-sm font-bold tracking-tight font-display">Mestre Digital</h2>
               </div>
               <button onClick={() => setSidebarOpen(false)} className="rounded-lg p-2 hover:bg-brand-highlight text-brand-muted">
@@ -713,9 +715,7 @@ function Footer() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 flex items-center justify-center overflow-hidden rounded-full shadow-soft">
-                <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
-              </div>
+              <LogoIcon className="w-12 h-12" />
               <h3 className="text-lg font-bold">Mestre Digital Grátis</h3>
             </div>
             <p className="text-sm text-brand-muted leading-relaxed">
