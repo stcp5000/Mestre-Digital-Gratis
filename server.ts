@@ -237,24 +237,26 @@ app.post("/api/titles/generate", async (req, res) => {
   }
 
   try {
-    const prompt = `Você é um Estrategista de Conteúdo Digital e Mestre em Copywriting para YouTube e Blogs. 
-    Sua missão é gerar uma lista de 8 títulos de alta performance (CTR explosivo) para o seguinte assunto: "${topic}".
+    const prompt = `Você é um Especialista em SEO e Estrategista de Conteúdo de Elite. 
+    Sua missão é gerar uma lista de 8 títulos de altíssima performance para o seguinte assunto: "${topic}".
     
     Plataforma alvo: "${platform}"
-    Estilo de branding: "${style}"
+    Estilo/Tom solicitado pelo usuário: "${style}" (Ex: Divertido, Clássico, Viral, Profissional)
 
     Para cada título, forneça:
-    1. O título propriamente dito (otimizado para cliques e curiosidade).
-    2. A estratégia psicológica por trás (ex: Negatividade, Curiosidade extrema, Desafio ao status quo, Lista definitiva).
-    3. Uma estimativa de CTR Score de 1 a 100 baseado na força do copy.
+    1. O título propriamente dito (otimizado para SEO, cliques e curiosidade, usando palavras-chave poderosas).
+    2. A estratégia psicológica ou de SEO por trás (ex: Gatilho de Escassez, Palavra-chave de cauda longa, Curiosidade extrema).
+    3. Uma estimativa de CTR Score de 1 a 100.
+    4. Uma sugestão de 3 tags SEO relevantes.
 
     Retorne o resultado EXCLUSIVAMENTE no formato JSON com a chave "titles":
     {
       "titles": [
         {
           "title": "O Título Matador",
-          "strategy": "Gatilho mental usado",
-          "score": 95
+          "strategy": "Explicação curta da estratégia",
+          "score": 95,
+          "tags": ["tag1", "tag2", "tag3"]
         }
       ]
     }`;
