@@ -351,8 +351,8 @@ function AppContent() {
               to="/"
               className="flex items-center gap-3 group"
             >
-              <div className="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center font-display font-bold text-xl shadow-soft transition-transform group-hover:scale-105">
-                M
+              <div className="w-12 h-12 flex items-center justify-center overflow-hidden rounded-full shadow-soft transition-transform group-hover:scale-105">
+                <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
               </div>
               <h1 className="text-xl font-bold tracking-tight text-brand-text font-display">
                 Mestre Digital Grátis
@@ -412,11 +412,16 @@ function Sidebar({ isSidebarOpen, setSidebarOpen }: { isSidebarOpen: boolean, se
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
-            className="fixed inset-y-0 left-0 z-[70] w-72 bg-[#0A0A0A] p-6 shadow-2xl border-r border-white/10 md:hidden"
+            className="fixed inset-y-0 left-0 z-[70] w-72 bg-white p-6 shadow-2xl border-r border-brand-border md:hidden"
           >
             <div className="mb-8 flex items-center justify-between">
-              <h2 className="text-lg font-bold">Menu</h2>
-              <button onClick={() => setSidebarOpen(false)} className="rounded-lg p-2 hover:bg-white/5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 flex items-center justify-center overflow-hidden rounded-full shadow-soft">
+                  <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+                </div>
+                <h2 className="text-sm font-bold tracking-tight font-display">Mestre Digital</h2>
+              </div>
+              <button onClick={() => setSidebarOpen(false)} className="rounded-lg p-2 hover:bg-brand-highlight text-brand-muted">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -424,18 +429,18 @@ function Sidebar({ isSidebarOpen, setSidebarOpen }: { isSidebarOpen: boolean, se
               <Link
                 to="/"
                 onClick={() => setSidebarOpen(false)}
-                className="flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors text-slate-400 hover:bg-white/5"
+                className="flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors text-brand-muted hover:bg-brand-highlight hover:text-brand-primary"
               >
                 <Search className="h-5 w-5" />
                 <span className="font-bold">Início</span>
               </Link>
-              <div className="pt-4 pb-2 text-[10px] font-black uppercase tracking-widest text-slate-600 px-3">Categorias</div>
+              <div className="pt-4 pb-2 text-[10px] font-black uppercase tracking-widest text-brand-muted/70 px-3">Categorias</div>
               {SEGMENTS.map((segment, idx) => (
                 <Link
                   key={idx}
                   to={`/categoria/${segment.slug}`}
                   onClick={() => setSidebarOpen(false)}
-                  className="flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors text-slate-400 hover:bg-white/5 hover:text-white"
+                  className="flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors text-brand-muted hover:bg-brand-highlight hover:text-brand-primary"
                 >
                   <span className="font-medium">{segment.title}</span>
                 </Link>
@@ -707,7 +712,12 @@ function Footer() {
       <div className="mx-auto max-w-[1200px] px-5 md:px-10">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-6">
-            <h3 className="text-lg font-bold">Mestre Digital Grátis</h3>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 flex items-center justify-center overflow-hidden rounded-full shadow-soft">
+                <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+              </div>
+              <h3 className="text-lg font-bold">Mestre Digital Grátis</h3>
+            </div>
             <p className="text-sm text-brand-muted leading-relaxed">
               Sua fonte definitiva de ferramentas digitais 100% gratuitas para impulsionar seu trabalho e criatividade.
             </p>
