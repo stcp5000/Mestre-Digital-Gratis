@@ -1,6 +1,6 @@
 {
-  "name": "Mestre Digital Grátis: Super Hub de Ferramentas Online",
-  "description": "Acesse grátis mais de 50 ferramentas digitais inteligentes: Identificador de Fontes AI, Checklist Inteligente com IA, Extrator de Cores, QR Code, Calculadoras Financeiras e muito mais. Otimize sua produtividade agora.",
+  "name": "Mestre Digital Grátis | Ferramentas digitais gratuitas",
+  "description": "Encontre ferramentas digitais gratuitas para produtividade, marketing, escrita, design e outras categorias úteis em um só lugar.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

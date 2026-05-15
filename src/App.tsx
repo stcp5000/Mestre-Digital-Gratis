@@ -234,55 +234,55 @@ const SEGMENTS = [
     title: "Produtividade",
     description: "Organize sua rotina e maximize seu tempo.",
     toolIds: ["hours", "checklist", "smart-checklist", "event-checklist", "pdf-converter", "smart-shopping-list", "pomodoro", "worldclock", "stopwatch", "timer"],
-    color: "cyan-500"
+    color: "brand-primary"
   },
   {
     title: "Financeiro",
     description: "Controle de investimentos e métricas de performance.",
     toolIds: ["calc", "percent", "discount", "profit-margin", "selling-price", "commission", "emergency-fund", "interest", "loan", "netsalary", "inss", "thirteenth", "vacation", "overtime", "currency", "creditcard", "boleto"],
-    color: "emerald-500"
+    color: "brand-primary"
   },
   {
     title: "Social e Marketing",
     description: "Gere visibilidade e conexões rápidas.",
     toolIds: ["qrcode", "barcode", "instagrambio", "hashtags", "cta-generator", "post-caption-generator", "title-generator", "brand-name-generator", "whatsapp"],
-    color: "pink-500"
+    color: "brand-primary"
   },
   {
     title: "Texto e Escrita",
     description: "Ferramentas para redação e copywriting.",
     toolIds: ["text", "lorem", "text-cleaner", "case", "accents", "spelling", "inverter", "html", "sort", "words"],
-    color: "amber-500"
+    color: "brand-primary"
   },
   {
     title: "Técnico e Dev",
     description: "Utilitários essenciais para desenvolvedores.",
     toolIds: ["json", "mockdata", "cnpj"],
-    color: "indigo-500"
+    color: "brand-primary"
   },
   {
     title: "Web Design e Imagem",
     description: "Crie identidades visuais impactantes.",
     toolIds: ["colors", "contrast", "palette", "imagecolor", "font", "color-converter"],
-    color: "violet-500"
+    color: "brand-primary"
   },
   {
     title: "Utilidades",
     description: "Conversores e cálculos gerais do dia a dia.",
     toolIds: ["unit", "password", "roman", "energyvolume", "cpf", "cnpj", "creditcard", "boleto", "contrast"],
-    color: "blue-500"
+    color: "brand-primary"
   },
   {
     title: "Planejamento",
     description: "Ferramentas para cronogramas e prazos.",
     toolIds: ["dates"],
-    color: "orange-500"
+    color: "brand-primary"
   },
   {
     title: "Saúde",
     description: "Monitore seu bem-estar e indicadores físicos.",
     toolIds: ["bmi", "idealweight", "daily-calories", "water-consumption", "running-pace", "menstrual", "pregnancy", "dogage", "catage", "temperature"],
-    color: "rose-500"
+    color: "brand-primary"
   }
 ].map(s => ({ ...s, slug: slugify(s.title) }));
 
@@ -336,119 +336,46 @@ function AppContent() {
   }, [searchQuery]);
 
   return (
-    <div className="min-h-screen bg-[#05192d] font-sans text-white selection-green">
+    <div className="min-h-screen bg-brand-bg font-sans text-brand-text selection-brand">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-white/5 bg-[#05192d]/80 backdrop-blur-md">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-soft border-b border-brand-border">
+        <div className="mx-auto flex h-20 max-w-[1200px] items-center justify-between px-5 md:px-10">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setSidebarOpen(true)}
-              className="rounded-lg p-2 text-slate-400 hover:bg-white/5 md:hidden"
+              className="p-2 text-brand-muted hover:bg-brand-highlight rounded-lg md:hidden"
             >
               <Menu className="h-6 w-6" />
             </button>
             <Link 
               to="/"
-              className="group flex cursor-pointer items-center gap-3 shrink-0"
+              className="flex items-center gap-3 group"
             >
-              <div className="flex items-center gap-3">
-                 <LogoIcon />
-                <div className="hidden sm:flex flex-col leading-none">
-                  <h1 className="text-xl font-black tracking-tighter text-white">
-                    MESTRE
-                  </h1>
-                  <span className="text-[10px] font-bold tracking-[0.3em] text-emerald-500 uppercase">Digital Grátis</span>
-                </div>
+              <div className="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center font-display font-bold text-xl shadow-soft transition-transform group-hover:scale-105">
+                M
               </div>
+              <h1 className="text-xl font-bold tracking-tight text-brand-text font-display">
+                Mestre Digital Grátis
+              </h1>
             </Link>
           </div>
 
-          {/* Search Bar */}
-          <div className="relative mx-4 flex-1 max-w-md hidden md:block">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setShowSearchResults(true);
-                }}
-                onFocus={() => setShowSearchResults(true)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm text-white placeholder-slate-500 outline-none focus:border-emerald-500/50 transition-all"
-                placeholder="Buscar ferramenta..."
-              />
-            </div>
-
-            <AnimatePresence>
-              {showSearchResults && searchQuery.trim() && (
-                <>
-                  <div 
-                    className="fixed inset-0 z-[-1]" 
-                    onClick={() => setShowSearchResults(false)} 
-                  />
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full mt-2 w-full bg-[#0A1A2F] border border-white/10 rounded-2xl shadow-2xl overflow-hidden p-2"
-                  >
-                    {filteredTools.length > 0 ? (
-                      <div className="space-y-1">
-                        {filteredTools.map((tool) => (
-                          <Link
-                            key={tool.id}
-                            to={`/ferramenta/${tool.slug}`}
-                            onClick={() => {
-                              setShowSearchResults(false);
-                              setSearchQuery("");
-                            }}
-                            className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors group"
-                          >
-                            <div className={`p-2 rounded-lg ${tool.color} bg-opacity-10 text-white shrink-0`}>
-                              <tool.icon className="h-4 w-4" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                               <h4 className="text-xs font-bold text-white truncate">{tool.name}</h4>
-                               <p className="text-[10px] text-slate-500 truncate">{tool.description}</p>
-                            </div>
-                            <ChevronRight className="h-3 w-3 text-slate-700 group-hover:text-emerald-500 transition-colors" />
-                          </Link>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="p-4 text-center">
-                        <p className="text-xs text-slate-500 font-bold uppercase">Nenhuma ferramenta encontrada</p>
-                      </div>
-                    )}
-                  </motion.div>
-                </>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <nav className="hidden items-center gap-8 lg:flex text-sm">
-            {SEGMENTS.slice(0, 5).map((segment, idx) => (
-              <Link
-                key={idx}
-                to={`/categoria/${segment.slug}`}
-                className="text-[10px] font-black uppercase tracking-widest transition-colors text-slate-400 hover:text-white"
-              >
-                {segment.title}
-              </Link>
-            ))}
+          <nav className="hidden items-center gap-8 md:flex">
+            <a href="#ferramentas" className="text-[15px] font-medium text-brand-muted hover:text-brand-primary transition-colors">Ferramentas</a>
+            <a href="#categorias" className="text-[15px] font-medium text-brand-muted hover:text-brand-primary transition-colors">Categorias</a>
+            <a href="#como-usar" className="text-[15px] font-medium text-brand-muted hover:text-brand-primary transition-colors">Como usar</a>
+            <a 
+              href="https://www.instagram.com/mestreferramentasdigitaisfree/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-[15px] font-medium text-brand-muted hover:text-brand-primary transition-colors"
+            >
+              Instagram
+            </a>
           </nav>
 
-          <div className="flex items-center gap-2">
-            <a 
-              href="https://www.instagram.com/mestreferramentasdigitaisfree/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden sm:flex rounded-full bg-white/5 p-2 text-slate-400 hover:bg-emerald-500 hover:text-black transition-all"
-              title="Siga-nos no Instagram"
-            >
-              <Instagram className="h-5 w-5" />
-            </a>
+          <div className="flex items-center gap-4">
+             {/* Botão removido a pedido do usuário */}
           </div>
         </div>
       </header>
@@ -456,7 +383,7 @@ function AppContent() {
       {/* Sidebar Mobile */}
       <Sidebar isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-[1200px] px-5 py-24 md:px-10 md:py-32">
         <Routes>
           <Route path="/" element={<HomeView />} />
           <Route path="/categoria/:categorySlug" element={<CategoryView />} />
@@ -521,136 +448,157 @@ function Sidebar({ isSidebarOpen, setSidebarOpen }: { isSidebarOpen: boolean, se
   );
 }
 
+// HomeView implementation
 function HomeView() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="space-y-16"
+      className="space-y-32"
     >
       {/* ABOVE THE FOLD / HERO */}
-      <div className="relative text-center md:text-left py-12 md:py-20 lg:py-28 overflow-hidden rounded-[4rem] px-8 md:px-16">
-        {/* Background Glows */}
-        <div className="absolute top-0 right-0 -z-10 translate-x-1/3 -translate-y-1/3">
-           <div className="h-[500px] w-[500px] bg-indigo-600/10 blur-[120px] rounded-full" />
-        </div>
-        <div className="absolute bottom-0 left-0 -z-10 -translate-x-1/3 translate-y-1/3">
-           <div className="h-[400px] w-[400px] bg-emerald-600/5 blur-[100px] rounded-full" />
-        </div>
-
-        <div className="max-w-4xl space-y-8 relative z-10">
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-center md:justify-start gap-2"
-          >
-            <span className="px-3 py-1 bg-indigo-500/10 text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-full border border-indigo-500/20">
-              Acesso 100% Gratuito & Ilimitado
+      <section className="grid gap-16 lg:grid-cols-2 lg:items-center min-h-[600px] pt-8 md:pt-16">
+        {/* Lado Esquerdo: Texto */}
+        <div className="space-y-12">
+          <div className="space-y-6">
+            <span className="inline-block px-4 py-1.5 bg-brand-highlight text-brand-primary text-sm font-bold rounded-full">
+              Ferramentas digitais 100% gratuitas
             </span>
-          </motion.div>
-
-          <h1 className="text-6xl font-black tracking-tighter text-white sm:text-8xl leading-[0.9] uppercase">
-            PARE DE PAGAR POR FERRAMENTAS QUE <span className="text-indigo-500 italic">PODEM SER GRÁTIS.</span>
-          </h1>
-
-          <p className="max-w-2xl text-lg md:text-xl text-slate-400 font-medium leading-relaxed">
-            Tudo o que você precisa para criar conteúdo, vender online e produzir mais sem gastar um centavo em assinaturas caras.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-             <a 
-               href="#categories"
-               className="w-full sm:w-auto px-10 py-5 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl shadow-[0_20px_40px_rgba(79,70,229,0.2)] hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all text-center"
-             >
-               Explorar ferramentas grátis
-             </a>
-             <div className="flex gap-6 items-center px-4">
-                <div className="flex -space-x-3 opacity-60">
-                   {[1,2,3].map(i => <div key={i} className="h-8 w-8 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center"><Search className="h-3 w-3" /></div>)}
-                </div>
-                <div className="text-left">
-                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Última atualização</p>
-                   <p className="text-[10px] font-bold text-white">Hoje, 15 de Maio</p>
-                </div>
-             </div>
+            <h1 className="text-[30px] md:text-[44px] lg:text-[48px] font-bold text-brand-text leading-[1.15] tracking-tight font-display max-w-[600px]">
+              As melhores ferramentas digitais grátis para criar, organizar e divulgar online
+            </h1>
+            <p className="text-base md:text-[18px] lg:text-[20px] text-brand-muted leading-relaxed max-w-[520px]">
+              Descubra ferramentas gratuitas para produtividade, marketing, escrita e design em um só lugar, sem pagar mensalidades caras.
+            </p>
           </div>
 
-          <div className="pt-12 flex flex-wrap justify-center md:justify-start gap-x-8 gap-y-4 opacity-40">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <a 
+              href="#ferramentas"
+              className="w-full sm:w-auto px-10 py-4 bg-brand-primary text-white text-[16px] font-semibold rounded-2xl hover:bg-brand-hover hover:-translate-y-0.5 hover:shadow-lg transition-all text-center flex items-center justify-center cursor-pointer h-[52px] shadow-soft"
+            >
+              Ver ferramentas grátis
+            </a>
+            <a 
+              href="#categorias"
+              className="w-full sm:w-auto px-10 py-4 bg-white text-brand-muted text-[16px] font-semibold rounded-2xl border border-brand-border hover:bg-brand-highlight hover:text-brand-primary transition-all text-center cursor-pointer h-[52px] shadow-soft"
+            >
+              Explorar categorias
+            </a>
+          </div>
+
+          <p className="text-sm text-brand-muted italic">
+            Ideal para criadores de conteúdo, iniciantes, freelancers e pequenos empreendedores.
+          </p>
+        </div>
+
+        {/* Lado Direito: Visual Cards */}
+        <div className="relative">
+          <div className="grid grid-cols-2 gap-4 md:gap-6">
             {[
-              { label: "IA & Copy", icon: Sparkles },
-              { label: "Design Pro", icon: Palette },
-              { label: "Produtividade", icon: Zap },
-              { label: "Marketing", icon: TrendingUp }
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-2 text-white">
-                <item.icon className="h-4 w-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest">{item.label}</span>
-              </div>
+              { label: "Produtividade", icon: Zap, color: "text-[#0F766E]", bg: "bg-[#0F766E]/10", border: 'hover:border-[#0F766E]/40', slug: 'produtividade' },
+              { label: "Social e Marketing", icon: TrendingUp, color: "text-[#F97316]", bg: "bg-[#F97316]/10", border: 'hover:border-[#F97316]/40', slug: 'social-e-marketing' },
+              { label: "Texto e Escrita", icon: Type, color: "text-[#7C3AED]", bg: "bg-[#7C3AED]/10", border: 'hover:border-[#7C3AED]/40', slug: 'texto-e-escrita' },
+              { label: "Design e Imagem", icon: Palette, color: "text-[#2563EB]", bg: "bg-[#2563EB]/10", border: 'hover:border-[#2563EB]/40', slug: 'web-design-e-imagem' }
+            ].map((card, i) => (
+              <Link
+                key={i}
+                to={`/categoria/${card.slug}`}
+                className={`bg-white p-8 rounded-[1.5rem] border border-brand-border shadow-card flex flex-col items-center text-center gap-4 transition-all hover:shadow-xl hover:-translate-y-1 group ${card.border}`}
+              >
+                <div className={`w-14 h-14 ${card.bg} ${card.color} rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110`}>
+                  <card.icon className="h-7 w-7" />
+                </div>
+                <span className="text-[15px] font-bold text-brand-text leading-tight">{card.label}</span>
+              </Link>
             ))}
           </div>
+          {/* Background Decorative Element */}
+          <div className="absolute -z-10 -inset-6 bg-brand-highlight rounded-[4rem] blur-3xl opacity-30" />
+        </div>
+      </section>
+
+      {/* Prova Rápida */}
+      <div className="text-center space-y-8 py-12 border-y border-brand-border">
+        <p className="text-brand-muted font-medium max-w-2xl mx-auto text-lg">
+          Ferramentas úteis para quem quer economizar, produzir melhor e encontrar opções grátis de verdade.
+        </p>
+        <div className="flex flex-wrap justify-center gap-x-12 gap-y-6">
+           {["Produtividade", "Marketing", "Escrita", "Design"].map(cat => (
+             <span key={cat} className="text-[11px] font-black uppercase tracking-[0.25em] text-brand-muted/50">{cat}</span>
+           ))}
         </div>
       </div>
 
-      <div id="categories" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 pb-12">
-        {SEGMENTS.map((segment, sIdx) => {
-          return (
-            <Link 
-              key={sIdx} 
-              to={`/categoria/${segment.slug}`}
-              className="group relative cursor-pointer rounded-[2rem] border border-white/10 p-8 transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] block overflow-hidden"
-              style={{ 
-                 backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 8%, #0A1F35)`
-              }}
-            >
-              {/* Decorative Glow */}
-              <div 
-                className="absolute -right-4 -top-4 h-24 w-24 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"
-                style={{ backgroundColor: `var(--color-${segment.color})` }}
-              />
+      {/* Seção de Categorias */}
+      <div id="categorias" className="space-y-16 scroll-mt-24">
+        <div className="text-center space-y-4">
+           <h2 className="text-3xl md:text-5xl font-bold tracking-tight font-display">Navegue por categorias</h2>
+           <p className="text-brand-muted max-w-2xl mx-auto text-lg">Encontre a coleção perfeita de utilitários para cada momento do seu dia.</p>
+        </div>
+        <div id="ferramentas" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 scroll-mt-24">
+          {SEGMENTS.map((segment, sIdx) => {
+            const getColorClasses = () => {
+              switch(segment.title) {
+                case "Produtividade": return "hover:border-[#0F766E]/40 group-hover:text-[#0F766E] hover:shadow-[#0F766E]/5";
+                case "Social e Marketing": return "hover:border-[#F97316]/40 group-hover:text-[#F97316] hover:shadow-[#F97316]/5";
+                case "Texto e Escrita": return "hover:border-[#7C3AED]/40 group-hover:text-[#7C3AED] hover:shadow-[#7C3AED]/5";
+                case "Web Design e Imagem": return "hover:border-[#2563EB]/40 group-hover:text-[#2563EB] hover:shadow-[#2563EB]/5";
+                default: return "hover:border-brand-primary/40 group-hover:text-brand-primary";
+              }
+            };
 
-              {/* Border emphasis */}
-              <div 
-                className="absolute inset-0 rounded-[2rem] border border-transparent group-hover:border-white/20 transition-colors pointer-events-none" 
-              />
-              
-              <div 
-                className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl transition-all group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(0,0,0,0.3)] shadow-lg"
-                style={{ 
-                  backgroundColor: `var(--color-${segment.color})`,
-                  color: '#05192d'
-                }}
+            return (
+              <Link 
+                key={sIdx} 
+                to={`/categoria/${segment.slug}`}
+                className={`bg-white border border-brand-border p-10 rounded-[2.5rem] transition-all shadow-soft hover:shadow-xl hover:-translate-y-1 group block relative overflow-hidden ${getColorClasses()}`}
               >
-                 {sIdx === 0 && <Clock className="h-7 w-7" />}
-                 {sIdx === 1 && <Calculator className="h-7 w-7" />}
-                 {sIdx === 2 && <Hash className="h-7 w-7" />}
-                 {sIdx === 3 && <Type className="h-7 w-7" />}
-                 {sIdx === 4 && <Search className="h-7 w-7" />}
-                 {sIdx === 5 && <Palette className="h-7 w-7" />}
-                 {sIdx === 6 && <RefreshCw className="h-7 w-7" />}
-                 {sIdx === 7 && <Info className="h-7 w-7" />}
-                 {sIdx === 8 && <Heart className="h-7 w-7" />}
-              </div>
-              <div className="flex items-center gap-2 mb-2">
-                 <span 
-                   className="text-[10px] font-black uppercase tracking-widest opacity-60"
-                   style={{ color: `var(--color-${segment.color})` }}
-                 >
-                    {(sIdx + 1).toString().padStart(2, '0')}
-                 </span>
-              </div>
-              <h3 className="text-2xl font-black tracking-tighter uppercase text-white leading-tight group-hover:text-emerald-400 transition-colors">{segment.title}</h3>
-              <p className="mt-3 text-slate-400 text-sm font-medium leading-relaxed group-hover:text-slate-300 transition-colors">{segment.description}</p>
-              <div 
-                className="mt-8 flex items-center text-[10px] font-black uppercase tracking-widest translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all"
-                style={{ color: `var(--color-${segment.color})` }}
-              >
-                  Explorar Agora <ChevronRight className="ml-1 h-3 w-3" />
-              </div>
-            </Link>
-          );
-        })}
+                <div className="relative z-10">
+                  <h3 className="text-2xl font-bold mb-4 tracking-tight">{segment.title}</h3>
+                  <p className="text-brand-muted text-base mb-10 leading-relaxed h-[4.5rem] overflow-hidden">{segment.description}</p>
+                  <div className="text-[15px] font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
+                    Ver ferramentas <ChevronRight className="h-5 w-5" />
+                  </div>
+                </div>
+                {/* Visual accent */}
+                <div className="absolute top-0 right-0 w-32 h-32 opacity-[0.03] -translate-y-8 translate-x-8 transition-transform group-hover:scale-110">
+                   <Zap className="w-full h-full" />
+                </div>
+              </Link>
+            );
+          })}
+        </div>
       </div>
+
+      {/* Como Funciona */}
+      <section id="como-usar" className="bg-white border border-brand-border rounded-[3rem] p-12 md:p-20 text-center space-y-20 scroll-mt-24 shadow-soft">
+        <div className="space-y-6">
+           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-brand-text font-display">Simples, rápido e útil</h2>
+           <p className="text-brand-muted text-lg max-w-2xl mx-auto">Tudo foi pensado para que você encontre e use o que precisa em poucos segundos.</p>
+        </div>
+        
+        <div className="grid md:grid-cols-3 gap-12 lg:gap-20 relative">
+           {[
+             { step: "01", title: "Escolha o tema", desc: "Selecione uma categoria ou use a busca para encontrar a ferramenta ideal para seu momento." },
+             { step: "02", title: "Entenda o uso", desc: "Cada utilitário possui explicações claras e objetivas sobre como ele ajuda você no dia a dia." },
+             { step: "03", title: "Use sem limites", desc: "Sem contas, sem assinaturas e sem taxas. Acesso direto e 100% gratuito para sempre." }
+           ].map((item, i) => (
+             <div key={i} className="space-y-6 relative group">
+                <div className="flex items-center justify-center">
+                  <div className="text-[64px] font-black text-brand-highlight transition-colors group-hover:text-brand-primary/10 font-display leading-none">
+                    {item.step}
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h4 className="text-xl font-bold text-brand-text tracking-tight">{item.title}</h4>
+                  <p className="text-brand-muted text-base leading-relaxed">{item.desc}</p>
+                </div>
+             </div>
+           ))}
+        </div>
+      </section>
     </motion.div>
   );
 }
@@ -659,7 +607,7 @@ function CategoryView() {
   const { categorySlug } = useParams();
   const segment = SEGMENTS.find(s => s.slug === categorySlug);
 
-  if (!segment) return <div className="text-center py-20 text-slate-400">Categoria não encontrada.</div>;
+  if (!segment) return <div className="text-center py-20 text-brand-muted">Categoria não encontrada.</div>;
 
   return (
     <motion.div
@@ -670,29 +618,22 @@ function CategoryView() {
     >
       <Link 
         to="/"
-        className="flex items-center text-xs font-black uppercase tracking-widest text-slate-500 hover:text-emerald-400 transition-colors w-fit"
+        className="inline-flex items-center text-sm font-bold text-brand-muted hover:text-brand-primary transition-colors gap-2"
       >
-        <ChevronRight className="mr-1 h-4 w-4 rotate-180" /> Voltar ao Início
+        <ChevronRight className="h-4 w-4 rotate-180" /> Voltar ao Início
       </Link>
 
-      <div className="max-w-4xl">
-         <div className="flex items-center gap-4 mb-4">
-            <span 
-              className="h-1 w-12 rounded-full" 
-              style={{ backgroundColor: `var(--color-${segment.color})` }}
-            />
-            <span 
-              className="text-xs font-black uppercase tracking-[0.3em]"
-              style={{ color: `var(--color-${segment.color})` }}
-            >
-              Ferramentas de {segment.title}
+      <div className="space-y-4">
+         <div className="flex items-center gap-3">
+            <span className="px-3 py-1 bg-brand-highlight text-brand-primary text-[10px] font-black uppercase tracking-[0.2em] rounded-md">
+               {segment.title}
             </span>
          </div>
-         <h2 className="text-5xl font-black tracking-tighter text-white uppercase">{segment.title}</h2>
-         <p className="mt-4 text-slate-400 text-lg font-medium">{segment.description}</p>
+         <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-brand-text font-display">{segment.title}</h2>
+         <p className="max-w-2xl text-brand-muted text-xl leading-relaxed">{segment.description}</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {segment.toolIds.map((toolId) => {
           const tool = TOOLS.find(t => t.id === toolId);
           if (!tool) return null;
@@ -700,33 +641,15 @@ function CategoryView() {
             <Link
               key={tool.id}
               to={`/ferramenta/${tool.slug}`}
-              className="group/tool cursor-pointer rounded-3xl border border-white/10 p-8 transition-all shadow-lg hover:shadow-2xl hover:scale-[1.02] block relative overflow-hidden"
-              style={{ 
-                backgroundColor: `color-mix(in srgb, var(--color-${segment.color}) 8%, #0A1F35)`
-              } as any}
+              className="group bg-white border border-brand-border p-8 rounded-[2.5rem] transition-all shadow-soft hover:shadow-card hover:border-brand-primary block relative overflow-hidden"
             >
-              {/* Decorative Glow */}
-              <div 
-                className="absolute -right-2 -top-2 h-16 w-16 rounded-full blur-2xl opacity-10 group-hover/tool:opacity-30 transition-opacity"
-                style={{ backgroundColor: `var(--color-${segment.color})` }}
-              />
-
-              <div 
-                className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl transition-all group-hover/tool:scale-110 shadow-lg"
-                style={{ 
-                  backgroundColor: `var(--color-${segment.color})`,
-                  color: '#05192d'
-                }}
-              >
-                <tool.icon className="h-6 w-6" />
+              <div className="mb-6 h-16 w-16 bg-brand-highlight text-brand-primary flex items-center justify-center rounded-2xl transition-transform group-hover:scale-110">
+                <tool.icon className="h-8 w-8" />
               </div>
-              <h4 className="text-xl font-bold text-white tracking-tight group-hover/tool:text-emerald-400 transition-colors">{tool.name}</h4>
-              <p className="mt-2 text-sm text-slate-400 leading-relaxed font-medium">{tool.description}</p>
-              <div 
-                className="mt-6 flex items-center text-[10px] font-black uppercase tracking-widest translate-y-1 opacity-0 group-hover/tool:translate-y-0 group-hover/tool:opacity-100 transition-all"
-                style={{ color: `var(--color-${segment.color})` }}
-              >
-                 Acessar Ferramenta <ChevronRight className="ml-1 h-3 w-3" />
+              <h4 className="text-2xl font-bold text-brand-text group-hover:text-brand-primary transition-colors font-display tracking-tight">{tool.name}</h4>
+              <p className="mt-3 text-brand-muted leading-relaxed">{tool.description}</p>
+              <div className="mt-8 flex items-center text-[15px] font-bold text-brand-primary gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                 Acessar Agora <ChevronRight className="h-5 w-5" />
               </div>
             </Link>
           );
@@ -740,28 +663,38 @@ function ToolView() {
   const { toolSlug } = useParams();
   const tool = TOOLS.find(t => t.slug === toolSlug);
 
-  if (!tool) return <div className="text-center py-20 text-slate-400">Ferramenta não encontrada.</div>;
+  if (!tool) return <div className="text-center py-20 text-brand-muted">Ferramenta não encontrada.</div>;
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
       className="max-w-5xl mx-auto"
     >
       <button 
         onClick={() => window.history.back()}
-        className="mb-8 flex items-center text-xs font-black uppercase tracking-widest text-slate-500 hover:text-emerald-400 transition-colors"
+        className="mb-8 flex items-center text-sm font-bold text-brand-muted hover:text-brand-primary transition-colors gap-2"
       >
-        <ChevronRight className="mr-1 h-4 w-4 rotate-180" /> Voltar
+        <ChevronRight className="h-4 w-4 rotate-180" /> Voltar
       </button>
 
-      <div className="rounded-[2.5rem] border border-white/10 bg-[#0A1F35] p-6 sm:p-12 shadow-2xl relative overflow-hidden min-h-[400px]">
-        <div className="absolute top-0 right-0 p-8 opacity-[0.03]">
-           <tool.icon className="h-64 w-64" />
-        </div>
-        <div className="relative z-10">
-          <ToolRenderer id={tool.id as ToolId} />
+      <div className="bg-white rounded-[2.5rem] border border-brand-border p-6 sm:p-12 shadow-card relative overflow-hidden min-h-[500px]">
+        {/* Background Icon Detail */}
+        <tool.icon className="absolute top-10 right-10 h-64 w-64 text-brand-highlight opacity-20 -rotate-12 pointer-events-none" />
+        
+        <div className="relative z-10 space-y-12">
+          <div className="space-y-4">
+             <div className="h-16 w-16 bg-brand-highlight text-brand-primary flex items-center justify-center rounded-2xl shadow-soft">
+                <tool.icon className="h-8 w-8" />
+             </div>
+             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-brand-text font-display">{tool.name}</h2>
+             <p className="text-brand-muted max-w-2xl text-lg leading-relaxed">{tool.description}</p>
+          </div>
+          
+          <div className="pt-12 border-t border-brand-border">
+            <ToolRenderer id={tool.id as ToolId} />
+          </div>
         </div>
       </div>
     </motion.div>
@@ -769,48 +702,56 @@ function ToolView() {
 }
 
 function Footer() {
-  const [visitorCount, setVisitorCount] = useState<number | null>(null);
-
-  useEffect(() => {
-    fetch("/api/visitor-count")
-      .then(res => res.json())
-      .then(data => setVisitorCount(data.count))
-      .catch(err => console.error("Error fetching visitor count:", err));
-  }, []);
-
   return (
-    <footer className="mt-auto border-t border-white/5 bg-[#05192d] py-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-6 bg-emerald-500 rounded-sm flex items-center justify-center font-bold text-black text-xs">M</div>
-              <span className="text-sm font-bold tracking-tight">MESTRE DIGITAL GRÁTIS</span>
+    <footer className="bg-white border-t border-brand-border py-16">
+      <div className="mx-auto max-w-[1200px] px-5 md:px-10">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+          <div className="space-y-6">
+            <h3 className="text-lg font-bold">Mestre Digital Grátis</h3>
+            <p className="text-sm text-brand-muted leading-relaxed">
+              Sua fonte definitiva de ferramentas digitais 100% gratuitas para impulsionar seu trabalho e criatividade.
+            </p>
+            <div className="flex gap-4">
+              <a 
+                href="https://www.instagram.com/mestreferramentasdigitaisfree/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-brand-highlight text-brand-primary rounded-xl flex items-center justify-center hover:bg-brand-primary hover:text-white transition-all shadow-soft"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
             </div>
-            {visitorCount !== null && (
-              <div className="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
-                <Users className="h-3 w-3 text-emerald-500" />
-                <span>Visitantes: <span className="text-emerald-400">{visitorCount.toLocaleString()}</span></span>
-              </div>
-            )}
           </div>
-          <p className="text-xs font-medium text-slate-500">
-            © 2026 Mestre Digital. Agilidade e eficiência quando você precisa.
-          </p>
-          <div className="flex gap-8 text-xs font-bold text-slate-500 uppercase tracking-widest items-center">
-            <a 
-              href="https://www.instagram.com/mestreferramentasdigitaisfree/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:text-emerald-400 transition-colors"
-              title="Instagram"
-            >
-              <Instagram className="h-4 w-4" />
-              <span className="hidden sm:inline">Instagram</span>
-            </a>
-            <a href="#" className="hover:text-emerald-400 transition-colors">Termos</a>
-            <a href="#" className="hover:text-emerald-400 transition-colors">Privacidade</a>
+          
+          <div>
+            <h4 className="font-bold mb-6">Navegação</h4>
+            <ul className="space-y-4 text-sm text-brand-muted">
+              <li><a href="#ferramentas" className="hover:text-brand-primary transition-colors">Ferramentas</a></li>
+              <li><a href="#categorias" className="hover:text-brand-primary transition-colors">Categorias</a></li>
+              <li><a href="#como-usar" className="hover:text-brand-primary transition-colors">Como usar</a></li>
+            </ul>
           </div>
+
+          <div>
+            <h4 className="font-bold mb-6">Comunidade</h4>
+            <ul className="space-y-4 text-sm text-brand-muted">
+              <li><a href="https://www.instagram.com/mestreferramentasdigitaisfree/" className="hover:text-brand-primary transition-colors">Instagram</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">Sugira uma ferramenta</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-bold mb-6">Jurídico</h4>
+            <ul className="space-y-4 text-sm text-brand-muted">
+              <li><a href="#" className="hover:text-brand-primary transition-colors">Termos de Uso</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">Privacidade</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="mt-16 pt-8 border-t border-brand-border flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-medium text-brand-muted">
+          <p>© 2026 Mestre Digital Grátis. Todos os direitos reservados.</p>
+          <p>Feito com ❤️ para criadores e empreendedores.</p>
         </div>
       </div>
     </footer>
