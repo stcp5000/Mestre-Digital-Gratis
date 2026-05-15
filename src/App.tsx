@@ -55,7 +55,9 @@ import {
   Lightbulb,
   MousePointer2,
   Eraser,
-  MessageSquare
+  MessageSquare,
+  PlayCircle,
+  FileDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, Link } from "react-router-dom";
@@ -130,9 +132,11 @@ const BrandNameGeneratorTool = lazy(() => import("./components/tools/BrandNameGe
 const CTAGeneratorTool = lazy(() => import("./components/tools/CTAGeneratorTool"));
 const TextCleanerTool = lazy(() => import("./components/tools/TextCleanerTool"));
 const PostCaptionGeneratorTool = lazy(() => import("./components/tools/PostCaptionGeneratorTool"));
+const TitleGeneratorTool = lazy(() => import("./components/tools/TitleGeneratorTool"));
+const PDFConverterTool = lazy(() => import("./components/tools/PDFConverterTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font" | "smart-checklist" | "loan" | "discount" | "profit-margin" | "selling-price" | "commission" | "emergency-fund" | "daily-calories" | "water-consumption" | "running-pace" | "event-checklist" | "smart-shopping-list" | "color-converter" | "brand-name-generator" | "cta-generator" | "text-cleaner" | "post-caption-generator";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font" | "smart-checklist" | "loan" | "discount" | "profit-margin" | "selling-price" | "commission" | "emergency-fund" | "daily-calories" | "water-consumption" | "running-pace" | "event-checklist" | "smart-shopping-list" | "color-converter" | "brand-name-generator" | "cta-generator" | "text-cleaner" | "post-caption-generator" | "title-generator" | "pdf-converter";
 
 interface Tool {
   id: ToolId;
@@ -220,6 +224,8 @@ const TOOLS: Tool[] = [
   { id: "cta-generator", name: "Gerador de CTA (Call to Action): Conversão e Copywriting com IA", description: "Crie chamadas para ação irresistíveis para anúncios, landing pages e redes sociais. Gere CTAs de alta conversão com nichos específicos e múltiplos designs profissionais.", icon: MousePointer2, color: "bg-rose-500" },
   { id: "text-cleaner", name: "Limpador de Texto Online: Remover Espaços, Quebras e Caracteres", description: "Limpe seu texto instantaneamente. Remova espaços extras, linhas vazias, emojis e caracteres especiais. Otimize parágrafos com múltiplos designs dinâmicos.", icon: Eraser, color: "bg-blue-600" },
   { id: "post-caption-generator", name: "Gerador de Legendas para Posts: Social Media e Viral com IA", description: "Sugira legendas criativas por nicho e objetivo para Instagram, TikTok e mais. Otimize seu engajamento com CTAs e designs personalizados pela IA.", icon: MessageSquare, color: "bg-pink-600" },
+  { id: "title-generator", name: "Gerador de Títulos para YouTube e Blog: Viralidade com IA", description: "Crie títulos impossíveis de não clicar para seus vídeos e artigos. Otimize o CTR com estratégias psicológicas e designs de elite para creators.", icon: PlayCircle, color: "bg-red-600" },
+  { id: "pdf-converter", name: "Conversor de PDF Online: PDF para Imagem, Texto e Vice-Versa", description: "Converta arquivos PDF para diversos formatos ou crie documentos PDF a partir de imagens e textos. Ferramenta rápida, segura e com designs exclusivos.", icon: FileDown, color: "bg-blue-600" },
 ].map(tool => ({ ...tool, slug: slugify(tool.name) } as Tool));
 
 
@@ -227,7 +233,7 @@ const SEGMENTS = [
   {
     title: "Produtividade",
     description: "Organize sua rotina e maximize seu tempo.",
-    toolIds: ["hours", "checklist", "smart-checklist", "event-checklist", "smart-shopping-list", "pomodoro", "worldclock", "stopwatch", "timer"],
+    toolIds: ["hours", "checklist", "smart-checklist", "event-checklist", "pdf-converter", "smart-shopping-list", "pomodoro", "worldclock", "stopwatch", "timer"],
     color: "cyan-500"
   },
   {
@@ -239,7 +245,7 @@ const SEGMENTS = [
   {
     title: "Social e Marketing",
     description: "Gere visibilidade e conexões rápidas.",
-    toolIds: ["qrcode", "barcode", "instagrambio", "hashtags", "cta-generator", "post-caption-generator", "brand-name-generator", "whatsapp"],
+    toolIds: ["qrcode", "barcode", "instagrambio", "hashtags", "cta-generator", "post-caption-generator", "title-generator", "brand-name-generator", "whatsapp"],
     color: "pink-500"
   },
   {
@@ -849,6 +855,8 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "cta-generator": return <CTAGeneratorTool />;
           case "text-cleaner": return <TextCleanerTool />;
           case "post-caption-generator": return <PostCaptionGeneratorTool />;
+          case "title-generator": return <TitleGeneratorTool />;
+          case "pdf-converter": return <PDFConverterTool />;
           default: return null;
         }
       })()}

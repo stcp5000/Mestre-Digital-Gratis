@@ -230,6 +230,51 @@ app.post("/api/caption/generate", async (req, res) => {
   }
 });
 
+app.post("/api/titles/generate", async (req, res) => {
+  const { topic, platform, style } = req.body;
+  if (!topic) {
+    return res.status(400).json({ error: "Topic is required" });
+  }
+
+  try {
+    const prompt = `Você é um Estrategista de Conteúdo Digital e Mestre em Copywriting para YouTube e Blogs. 
+    Sua missão é gerar uma lista de 8 títulos de alta performance (CTR explosivo) para o seguinte assunto: "${topic}".
+    
+    Plataforma alvo: "${platform}"
+    Estilo de branding: "${style}"
+
+    Para cada título, forneça:
+    1. O título propriamente dito (otimizado para cliques e curiosidade).
+    2. A estratégia psicológica por trás (ex: Negatividade, Curiosidade extrema, Desafio ao status quo, Lista definitiva).
+    3. Uma estimativa de CTR Score de 1 a 100 baseado na força do copy.
+
+    Retorne o resultado EXCLUSIVAMENTE no formato JSON com a chave "titles":
+    {
+      "titles": [
+        {
+          "title": "O Título Matador",
+          "strategy": "Gatilho mental usado",
+          "score": 95
+        }
+      ]
+    }`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      }
+    });
+    
+    const data = JSON.parse(response.text || '{"titles": []}');
+    res.json(data);
+  } catch (error: any) {
+    console.error("Gemini Title Gen Error:", error);
+    res.status(500).json({ error: "Failed to generate titles" });
+  }
+});
+
 app.post("/api/shopping-list/suggest", async (req, res) => {
   const { topic } = req.body;
   if (!topic) {
