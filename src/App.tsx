@@ -529,25 +529,70 @@ function HomeView() {
       exit={{ opacity: 0, y: -20 }}
       className="space-y-16"
     >
-      <div className="text-center md:text-left max-w-4xl py-10">
-        <motion.span 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="inline-block px-3 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold tracking-[0.2em] rounded border border-emerald-500/20 uppercase mb-6"
-        >
-          100% GRATUITAS • RÁPIDAS • PRÁTICAS
-        </motion.span>
-        <h1 className="text-6xl font-extrabold tracking-tighter text-white sm:text-8xl leading-[0.85]">
-          MESTRE DIGITAL <br /><span className="text-emerald-500 tracking-tighter uppercase italic text-shadow-glow">GRÁTIS.</span>
-        </h1>
-        <p className="mt-8 max-w-xl text-xl text-slate-400 leading-relaxed font-medium mx-auto md:mx-0">
-          O melhor hub de ferramentas digitais online e gratuitas. Rapidez, privacidade e eficiência para sua rotina de trabalho, estudos e saúde. <br />
-          <span className="text-white/40">Selecione uma categoria abaixo para acessar nossos utilitários.</span>
-        </p>
+      {/* ABOVE THE FOLD / HERO */}
+      <div className="relative text-center md:text-left py-12 md:py-20 lg:py-28 overflow-hidden rounded-[4rem] px-8 md:px-16">
+        {/* Background Glows */}
+        <div className="absolute top-0 right-0 -z-10 translate-x-1/3 -translate-y-1/3">
+           <div className="h-[500px] w-[500px] bg-indigo-600/10 blur-[120px] rounded-full" />
+        </div>
+        <div className="absolute bottom-0 left-0 -z-10 -translate-x-1/3 translate-y-1/3">
+           <div className="h-[400px] w-[400px] bg-emerald-600/5 blur-[100px] rounded-full" />
+        </div>
+
+        <div className="max-w-4xl space-y-8 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center justify-center md:justify-start gap-2"
+          >
+            <span className="px-3 py-1 bg-indigo-500/10 text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-full border border-indigo-500/20">
+              Acesso 100% Gratuito & Ilimitado
+            </span>
+          </motion.div>
+
+          <h1 className="text-6xl font-black tracking-tighter text-white sm:text-8xl leading-[0.9] uppercase">
+            PARE DE PAGAR POR FERRAMENTAS QUE <span className="text-indigo-500 italic">PODEM SER GRÁTIS.</span>
+          </h1>
+
+          <p className="max-w-2xl text-lg md:text-xl text-slate-400 font-medium leading-relaxed">
+            Tudo o que você precisa para criar conteúdo, vender online e produzir mais sem gastar um centavo em assinaturas caras.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+             <a 
+               href="#categories"
+               className="w-full sm:w-auto px-10 py-5 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl shadow-[0_20px_40px_rgba(79,70,229,0.2)] hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all text-center"
+             >
+               Explorar ferramentas grátis
+             </a>
+             <div className="flex gap-6 items-center px-4">
+                <div className="flex -space-x-3 opacity-60">
+                   {[1,2,3].map(i => <div key={i} className="h-8 w-8 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center"><Search className="h-3 w-3" /></div>)}
+                </div>
+                <div className="text-left">
+                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Última atualização</p>
+                   <p className="text-[10px] font-bold text-white">Hoje, 15 de Maio</p>
+                </div>
+             </div>
+          </div>
+
+          <div className="pt-12 flex flex-wrap justify-center md:justify-start gap-x-8 gap-y-4 opacity-40">
+            {[
+              { label: "IA & Copy", icon: Sparkles },
+              { label: "Design Pro", icon: Palette },
+              { label: "Produtividade", icon: Zap },
+              { label: "Marketing", icon: TrendingUp }
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-2 text-white">
+                <item.icon className="h-4 w-4" />
+                <span className="text-[10px] font-black uppercase tracking-widest">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 pb-12">
+      <div id="categories" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 pb-12">
         {SEGMENTS.map((segment, sIdx) => {
           return (
             <Link 
