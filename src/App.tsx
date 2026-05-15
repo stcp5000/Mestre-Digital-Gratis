@@ -57,6 +57,7 @@ import {
   Eraser,
   MessageSquare,
   PlayCircle,
+  BarChart3,
   FileDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
@@ -133,10 +134,12 @@ const CTAGeneratorTool = lazy(() => import("./components/tools/CTAGeneratorTool"
 const TextCleanerTool = lazy(() => import("./components/tools/TextCleanerTool"));
 const PostCaptionGeneratorTool = lazy(() => import("./components/tools/PostCaptionGeneratorTool"));
 const TitleGeneratorTool = lazy(() => import("./components/tools/TitleGeneratorTool"));
+const LongTailKeywordTool = lazy(() => import("./components/tools/LongTailKeywordTool"));
+const HeadlineAnalyzerTool = lazy(() => import("./components/tools/HeadlineAnalyzerTool"));
 const PDFConverterTool = lazy(() => import("./components/tools/PDFConverterTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font" | "smart-checklist" | "loan" | "discount" | "profit-margin" | "selling-price" | "commission" | "emergency-fund" | "daily-calories" | "water-consumption" | "running-pace" | "event-checklist" | "smart-shopping-list" | "color-converter" | "brand-name-generator" | "cta-generator" | "text-cleaner" | "post-caption-generator" | "title-generator" | "pdf-converter";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font" | "smart-checklist" | "loan" | "discount" | "profit-margin" | "selling-price" | "commission" | "emergency-fund" | "daily-calories" | "water-consumption" | "running-pace" | "event-checklist" | "smart-shopping-list" | "color-converter" | "brand-name-generator" | "cta-generator" | "text-cleaner" | "post-caption-generator" | "title-generator" | "long-tail-keyword" | "headline-analyzer" | "pdf-converter";
 
 interface Tool {
   id: ToolId;
@@ -224,6 +227,8 @@ const TOOLS: Tool[] = [
   { id: "cta-generator", name: "Gerador de CTA (Call to Action): Conversão e Copywriting com IA", description: "Crie chamadas para ação irresistíveis para anúncios, landing pages e redes sociais. Gere CTAs de alta conversão com nichos específicos e múltiplos designs profissionais.", icon: MousePointer2, color: "bg-rose-500" },
   { id: "text-cleaner", name: "Limpador de Texto Online: Remover Espaços, Quebras e Caracteres", description: "Limpe seu texto instantaneamente. Remova espaços extras, linhas vazias, emojis e caracteres especiais. Otimize parágrafos com múltiplos designs dinâmicos.", icon: Eraser, color: "bg-blue-600" },
   { id: "post-caption-generator", name: "Gerador de Legendas para Posts: Social Media e Viral com IA", description: "Sugira legendas criativas por nicho e objetivo para Instagram, TikTok e mais. Otimize seu engajamento com CTAs e designs personalizados pela IA.", icon: MessageSquare, color: "bg-pink-600" },
+  { id: "headline-analyzer", name: "Analisador de Headline: SEO, Copywriting e Impacto com IA", description: "Analise a força da sua headline para vendas, blogs e anúncios. Descubra o poder emocional, legibilidade e métricas de SEO com designs exclusivos.", icon: BarChart3, color: "bg-indigo-600" },
+  { id: "long-tail-keyword", name: "Gerador de Palavras-Chave Long Tail: SEO e Tráfego com IA", description: "Encontre palavras-chave de cauda longa com baixa concorrência e alta conversão. Otimize seu SEO com termos específicos, intenção de busca e métricas reais.", icon: Search, color: "bg-emerald-600" },
   { id: "title-generator", name: "Gerador de Títulos para YouTube e Blog: SEO e Viralidade com IA", description: "Crie títulos impossíveis de não clicar e otimizados para SEO. Gerador de títulos com palavras-chave, estratégias de CTR e múltiplos designs divertidos e clássicos.", icon: PlayCircle, color: "bg-red-600" },
   { id: "pdf-converter", name: "Conversor de PDF Online: PDF para Imagem, Texto e Vice-Versa", description: "Converta arquivos PDF para diversos formatos ou crie documentos PDF a partir de imagens e textos. Ferramenta rápida, segura e com designs exclusivos.", icon: FileDown, color: "bg-blue-600" },
 ].map(tool => ({ ...tool, slug: slugify(tool.name) } as Tool));
@@ -245,7 +250,7 @@ const SEGMENTS = [
   {
     title: "Social e Marketing",
     description: "Gere visibilidade e conexões rápidas.",
-    toolIds: ["qrcode", "barcode", "instagrambio", "hashtags", "cta-generator", "post-caption-generator", "title-generator", "brand-name-generator", "whatsapp"],
+    toolIds: ["qrcode", "barcode", "instagrambio", "hashtags", "cta-generator", "post-caption-generator", "title-generator", "headline-analyzer", "long-tail-keyword", "brand-name-generator", "whatsapp"],
     color: "brand-primary"
   },
   {
@@ -852,6 +857,8 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "text-cleaner": return <TextCleanerTool />;
           case "post-caption-generator": return <PostCaptionGeneratorTool />;
           case "title-generator": return <TitleGeneratorTool />;
+          case "long-tail-keyword": return <LongTailKeywordTool />;
+          case "headline-analyzer": return <HeadlineAnalyzerTool />;
           case "pdf-converter": return <PDFConverterTool />;
           default: return null;
         }

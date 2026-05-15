@@ -277,6 +277,104 @@ app.post("/api/titles/generate", async (req, res) => {
   }
 });
 
+app.post("/api/keywords/long-tail", async (req, res) => {
+  const { seed, platform, tone } = req.body;
+  if (!seed) {
+    return res.status(400).json({ error: "Seed keyword is required" });
+  }
+
+  try {
+    const prompt = `Você é um Especialista em SEO (Search Engine Optimization) de altíssimo nível.
+    Sua missão é gerar uma lista estratégica de 15 palavras-chave de "cauda longa" (long tail keywords) baseadas na semente: "${seed}".
+    
+    Plataforma foco: "${platform || 'Google'}"
+    Tom/Estilo de sugestão: "${tone || 'Profissional'}"
+
+    Para cada palavra-chave, forneça:
+    1. A palavra-chave (frase completa de cauda longa).
+    2. A Intenção de Busca (Search Intent): (Informativa, Navegacional, Transacional ou Investigação Comercial).
+    3. Nível de Dificuldade (KD): 1-100.
+    4. Por que usar: Uma breve explicação SEO do benefício.
+
+    Retorne o resultado EXCLUSIVAMENTE no formato JSON com a chave "keywords":
+    {
+      "keywords": [
+        {
+          "keyword": "como fazer bolo de cenoura fofinho com cobertura",
+          "intent": "Informativa",
+          "difficulty": 25,
+          "benefit": "Baixa concorrência e alto volume de busca específica."
+        }
+      ]
+    }`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      }
+    });
+    
+    const data = JSON.parse(response.text || '{"keywords": []}');
+    res.json(data);
+  } catch (error: any) {
+    console.error("Gemini Long Tail Error:", error);
+    res.status(500).json({ error: "Failed to generate long tail keywords" });
+  }
+});
+
+app.post("/api/headline/analyze", async (req, res) => {
+  const { headline, goal, tone } = req.body;
+  if (!headline) {
+    return res.status(400).json({ error: "Headline is required" });
+  }
+
+  try {
+    const prompt = `Você é um Copywriter de Resposta Direta e Especialista em Psicologia do Consumidor. 
+    Analise a seguinte headline: "${headline}"
+    
+    Objetivo da Headline: "${goal || 'Engajamento Geral'}"
+    Tom desejado pelo usuário: "${tone || 'Profissional'}"
+
+    Forneça uma análise técnica detalhada retornando EXCLUSIVAMENTE um JSON com:
+    1. "score": Nota de 0 a 100 baseado em impacto, clareza e urgência.
+    2. "readability": Facilidade de leitura (Fácil, Média, Difícil).
+    3. "emotionalPower": Percentual de palavras emocionais impactantes.
+    4. "strengths": Lista de 3 pontos fortes.
+    5. "weaknesses": Lista de 3 pontos de melhoria.
+    6. "powerWords": Lista de palavras poderosas encontradas.
+    7. "suggestions": 3 sugestões de melhoria (versões alternativas).
+    8. "seoAnalysis": Uma frase curta sobre o potencial de busca.
+
+    Formato do JSON:
+    {
+      "score": 85,
+      "readability": "Fácil",
+      "emotionalPower": 45,
+      "strengths": ["...", "...", "..."],
+      "weaknesses": ["...", "...", "..."],
+      "powerWords": ["...", "..."],
+      "suggestions": ["...", "...", "..."],
+      "seoAnalysis": "..."
+    }`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      }
+    });
+    
+    const data = JSON.parse(response.text || '{}');
+    res.json(data);
+  } catch (error: any) {
+    console.error("Gemini Headline Error:", error);
+    res.status(500).json({ error: "Failed to analyze headline" });
+  }
+});
+
 app.post("/api/shopping-list/suggest", async (req, res) => {
   const { topic } = req.body;
   if (!topic) {
