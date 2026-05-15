@@ -375,6 +375,98 @@ app.post("/api/headline/analyze", async (req, res) => {
   }
 });
 
+app.post("/api/description/create", async (req, res) => {
+  const { title, details, platform, tone } = req.body;
+  if (!title) {
+    return res.status(400).json({ error: "Title/Product name is required" });
+  }
+
+  try {
+    const prompt = `Você é um Especialista em Marketing Digital e Copywriting de Conversão.
+    Sua missão é criar uma descrição mestre para o seguinte item: "${title}".
+    
+    Detalhes Adicionais: "${details || 'Não especificados'}"
+    Plataforma Destino: "${platform}"
+    Tom de Voz: "${tone}"
+
+    A descrição deve ser otimizada para SEO, engajamento e conversão.
+    Se for YouTube, inclua timestamps fictícios e tags. 
+    Se for Instagram, inclua hashtags estratégicas.
+    Se for Produto, foque em benefícios e características técnicas.
+
+    Retorne o resultado EXCLUSIVAMENTE no formato JSON com a chave "description":
+    {
+      "description": "Texto completo da descrição aqui...",
+      "seoScore": 85,
+      "keywords_used": ["key1", "key2", "key3"],
+      "short_teaser": "Frase curta para feed ou meta description"
+    }`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      }
+    });
+    
+    const data = JSON.parse(response.text || '{}');
+    res.json(data);
+  } catch (error: any) {
+    console.error("Gemini Description Error:", error);
+    res.status(500).json({ error: "Failed to create description" });
+  }
+});
+
+app.post("/api/hooks/generate", async (req, res) => {
+  const { topic, platform, format, tone } = req.body;
+  if (!topic) {
+    return res.status(400).json({ error: "Topic is required" });
+  }
+
+  try {
+    const prompt = `Você é um Especialista em Retenção e Copywriting Viral. 
+    Sua missão é gerar 6 "Hooks" (Ganchos) irresistíveis para prender a atenção nos primeiros segundos.
+
+    Assunto/Vídeo: "${topic}"
+    Plataforma: "${platform}"
+    Formato: "${format}"
+    Tom Desejado: "${tone}"
+
+    Para cada Hook, forneça:
+    1. O texto do Hook (o que deve ser dito ou escrito na tela).
+    2. O Gatilho Mental/Psicológico utilizado (ex: Curiosidade, Medo de Perder, Ganho Imediato, Contradição).
+    3. Uma sugestão visual para acompanhar o Hook (o que deve estar acontecendo no vídeo).
+    4. Um "Retainer Score" de 1-100 refletindo o poder de retenção.
+
+    Retorne o resultado EXCLUSIVAMENTE no formato JSON com a chave "hooks":
+    {
+      "hooks": [
+        {
+          "text": "Você não vai acreditar no que aconteceu quando eu fiz X...",
+          "trigger": "Curiosidade Extrema",
+          "visual": "Dê um zoom rápido no seu rosto com expressão de surpresa.",
+          "score": 92
+        }
+      ]
+    }`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      }
+    });
+    
+    const data = JSON.parse(response.text || '{"hooks": []}');
+    res.json(data);
+  } catch (error: any) {
+    console.error("Gemini Hook Error:", error);
+    res.status(500).json({ error: "Failed to generate hooks" });
+  }
+});
+
 app.post("/api/shopping-list/suggest", async (req, res) => {
   const { topic } = req.body;
   if (!topic) {

@@ -58,6 +58,7 @@ import {
   MessageSquare,
   PlayCircle,
   BarChart3,
+  FileText,
   FileDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
@@ -136,10 +137,12 @@ const PostCaptionGeneratorTool = lazy(() => import("./components/tools/PostCapti
 const TitleGeneratorTool = lazy(() => import("./components/tools/TitleGeneratorTool"));
 const LongTailKeywordTool = lazy(() => import("./components/tools/LongTailKeywordTool"));
 const HeadlineAnalyzerTool = lazy(() => import("./components/tools/HeadlineAnalyzerTool"));
+const DescriptionCreatorTool = lazy(() => import("./components/tools/DescriptionCreatorTool"));
+const HookGeneratorTool = lazy(() => import("./components/tools/HookGeneratorTool"));
 const PDFConverterTool = lazy(() => import("./components/tools/PDFConverterTool"));
 
 // --- Types ---
-type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font" | "smart-checklist" | "loan" | "discount" | "profit-margin" | "selling-price" | "commission" | "emergency-fund" | "daily-calories" | "water-consumption" | "running-pace" | "event-checklist" | "smart-shopping-list" | "color-converter" | "brand-name-generator" | "cta-generator" | "text-cleaner" | "post-caption-generator" | "title-generator" | "long-tail-keyword" | "headline-analyzer" | "pdf-converter";
+type ToolId = "qrcode" | "hashtags" | "calc" | "text" | "colors" | "checklist" | "hours" | "whatsapp" | "json" | "pomodoro" | "unit" | "dates" | "lorem" | "case" | "password" | "accents" | "spelling" | "inverter" | "html" | "sort" | "words" | "percent" | "interest" | "netsalary" | "inss" | "thirteenth" | "vacation" | "overtime" | "currency" | "bmi" | "idealweight" | "menstrual" | "pregnancy" | "dogage" | "catage" | "temperature" | "roman" | "energyvolume" | "barcode" | "mockdata" | "instagrambio" | "cpf" | "cnpj" | "creditcard" | "boleto" | "worldclock" | "stopwatch" | "timer" | "contrast" | "palette" | "imagecolor" | "font" | "smart-checklist" | "loan" | "discount" | "profit-margin" | "selling-price" | "commission" | "emergency-fund" | "daily-calories" | "water-consumption" | "running-pace" | "event-checklist" | "smart-shopping-list" | "color-converter" | "brand-name-generator" | "cta-generator" | "text-cleaner" | "post-caption-generator" | "title-generator" | "long-tail-keyword" | "headline-analyzer" | "description-creator" | "hook-generator" | "pdf-converter";
 
 interface Tool {
   id: ToolId;
@@ -227,6 +230,8 @@ const TOOLS: Tool[] = [
   { id: "cta-generator", name: "Gerador de CTA (Call to Action): Conversão e Copywriting com IA", description: "Crie chamadas para ação irresistíveis para anúncios, landing pages e redes sociais. Gere CTAs de alta conversão com nichos específicos e múltiplos designs profissionais.", icon: MousePointer2, color: "bg-rose-500" },
   { id: "text-cleaner", name: "Limpador de Texto Online: Remover Espaços, Quebras e Caracteres", description: "Limpe seu texto instantaneamente. Remova espaços extras, linhas vazias, emojis e caracteres especiais. Otimize parágrafos com múltiplos designs dinâmicos.", icon: Eraser, color: "bg-blue-600" },
   { id: "post-caption-generator", name: "Gerador de Legendas para Posts: Social Media e Viral com IA", description: "Sugira legendas criativas por nicho e objetivo para Instagram, TikTok e mais. Otimize seu engajamento com CTAs e designs personalizados pela IA.", icon: MessageSquare, color: "bg-pink-600" },
+  { id: "hook-generator", name: "Gerador de Hooks para Redes Sociais: Viral e Retenção com IA", description: "Crie ganchos irresistíveis para Reels, Shorts e TikTok. Prenda a atenção nos primeiros segundos com estratégias de psicologia e múltiplos designs exclusivos.", icon: Flame, color: "bg-orange-600" },
+  { id: "description-creator", name: "Criador de Descrição de Vídeos, Posts e Produtos: SEO com IA", description: "Crie descrições completas e otimizadas para YouTube, Instagram e E-commerce. Gere textos persuasivos com palavras-chave, timestamps e designs exclusivos.", icon: FileText, color: "bg-amber-600" },
   { id: "headline-analyzer", name: "Analisador de Headline: SEO, Copywriting e Impacto com IA", description: "Analise a força da sua headline para vendas, blogs e anúncios. Descubra o poder emocional, legibilidade e métricas de SEO com designs exclusivos.", icon: BarChart3, color: "bg-indigo-600" },
   { id: "long-tail-keyword", name: "Gerador de Palavras-Chave Long Tail: SEO e Tráfego com IA", description: "Encontre palavras-chave de cauda longa com baixa concorrência e alta conversão. Otimize seu SEO com termos específicos, intenção de busca e métricas reais.", icon: Search, color: "bg-emerald-600" },
   { id: "title-generator", name: "Gerador de Títulos para YouTube e Blog: SEO e Viralidade com IA", description: "Crie títulos impossíveis de não clicar e otimizados para SEO. Gerador de títulos com palavras-chave, estratégias de CTR e múltiplos designs divertidos e clássicos.", icon: PlayCircle, color: "bg-red-600" },
@@ -250,7 +255,7 @@ const SEGMENTS = [
   {
     title: "Social e Marketing",
     description: "Gere visibilidade e conexões rápidas.",
-    toolIds: ["qrcode", "barcode", "instagrambio", "hashtags", "cta-generator", "post-caption-generator", "title-generator", "headline-analyzer", "long-tail-keyword", "brand-name-generator", "whatsapp"],
+    toolIds: ["qrcode", "barcode", "instagrambio", "hashtags", "cta-generator", "post-caption-generator", "title-generator", "headline-analyzer", "description-creator", "hook-generator", "long-tail-keyword", "brand-name-generator", "whatsapp"],
     color: "brand-primary"
   },
   {
@@ -368,7 +373,72 @@ function AppContent() {
             </Link>
           </div>
 
-          <nav className="hidden items-center gap-8 md:flex">
+          <div className="flex items-center gap-4 flex-1 max-w-md mx-6 relative">
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-brand-muted" />
+              <input 
+                type="text" 
+                placeholder="Buscar ferramentas..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowSearchResults(true);
+                }}
+                onFocus={() => setShowSearchResults(true)}
+                className="w-full h-10 pl-10 pr-4 bg-brand-highlight border border-brand-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 transition-all"
+              />
+
+              <AnimatePresence>
+                {showSearchResults && searchQuery.trim() && (
+                  <>
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onClick={() => setShowSearchResults(false)}
+                      className="fixed inset-0 z-40 bg-transparent"
+                    />
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute top-full left-0 right-0 mt-2 z-50 bg-white border border-brand-border rounded-2xl shadow-xl overflow-hidden"
+                    >
+                      {filteredTools.length > 0 ? (
+                        <div className="p-2">
+                          {filteredTools.map(tool => (
+                            <Link
+                              key={tool.id}
+                              to={`/ferramenta/${tool.slug}`}
+                              onClick={() => {
+                                setSearchQuery("");
+                                setShowSearchResults(false);
+                              }}
+                              className="flex items-center gap-3 p-3 hover:bg-brand-highlight rounded-xl transition-colors group"
+                            >
+                              <div className={`w-10 h-10 ${tool.color} text-white rounded-lg flex items-center justify-center shrink-0`}>
+                                <tool.icon className="h-5 w-5" />
+                              </div>
+                              <div className="overflow-hidden">
+                                <h4 className="text-sm font-bold truncate">{tool.name}</h4>
+                                <p className="text-[10px] text-brand-muted truncate">{tool.description}</p>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="p-8 text-center text-brand-muted text-sm">
+                          Nenhuma ferramenta encontrada.
+                        </div>
+                      )}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+
+          <nav className="hidden items-center gap-6 lg:flex">
             <a href="#ferramentas" className="text-[15px] font-medium text-brand-muted hover:text-brand-primary transition-colors">Ferramentas</a>
             <a href="#categorias" className="text-[15px] font-medium text-brand-muted hover:text-brand-primary transition-colors">Categorias</a>
             <a href="#como-usar" className="text-[15px] font-medium text-brand-muted hover:text-brand-primary transition-colors">Como usar</a>
@@ -394,7 +464,7 @@ function AppContent() {
 
       <main className="mx-auto max-w-[1200px] px-5 py-24 md:px-10 md:py-32">
         <Routes>
-          <Route path="/" element={<HomeView />} />
+          <Route path="/" element={<HomeView searchQuery={searchQuery} setSearchQuery={setSearchQuery} setShowSearchResults={setShowSearchResults} filteredTools={filteredTools} />} />
           <Route path="/categoria/:categorySlug" element={<CategoryView />} />
           <Route path="/ferramenta/:toolSlug" element={<ToolView />} />
         </Routes>
@@ -460,8 +530,19 @@ function Sidebar({ isSidebarOpen, setSidebarOpen }: { isSidebarOpen: boolean, se
   );
 }
 
-// HomeView implementation
-function HomeView() {
+function HomeView({ 
+  searchQuery, 
+  setSearchQuery, 
+  setShowSearchResults,
+  filteredTools 
+}: { 
+  searchQuery: string; 
+  setSearchQuery: (s: string) => void;
+  setShowSearchResults: (b: boolean) => void;
+  filteredTools: Tool[];
+}) {
+  const [heroSearchFocused, setHeroSearchFocused] = useState(false);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -485,7 +566,76 @@ function HomeView() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="relative max-w-[520px] z-20">
+            <div className={`relative flex items-center bg-white border-2 rounded-[2rem] p-2 transition-all shadow-soft ${heroSearchFocused ? 'border-brand-primary ring-4 ring-brand-primary/10 shadow-xl' : 'border-brand-border'}`}>
+              <Search className={`ml-4 h-6 w-6 ${heroSearchFocused ? 'text-brand-primary' : 'text-brand-muted'}`} />
+              <input 
+                type="text"
+                placeholder="Qual ferramenta você precisa hoje?"
+                value={searchQuery}
+                onFocus={() => {
+                  setHeroSearchFocused(true);
+                  setShowSearchResults(true);
+                }}
+                onBlur={() => setTimeout(() => setHeroSearchFocused(false), 200)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowSearchResults(true);
+                }}
+                className="flex-1 px-4 py-3 bg-transparent outline-none text-lg font-medium placeholder:text-zinc-400 placeholder:font-normal"
+              />
+              <button className="hidden sm:block px-8 h-12 bg-brand-primary text-white rounded-2xl font-bold hover:bg-brand-hover transition-colors shadow-soft">
+                Buscar
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {heroSearchFocused && searchQuery.trim() && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute top-full left-0 right-0 mt-3 bg-white border border-brand-border rounded-[2rem] shadow-2xl overflow-hidden z-30"
+                >
+                  {filteredTools.length > 0 ? (
+                    <div className="p-3">
+                       {filteredTools.map(tool => (
+                         <Link
+                           key={tool.id}
+                           to={`/ferramenta/${tool.slug}`}
+                           onClick={() => {
+                             setSearchQuery("");
+                             setShowSearchResults(false);
+                           }}
+                           className="flex items-center gap-4 p-4 hover:bg-brand-highlight rounded-2xl transition-colors group"
+                         >
+                            <div className={`w-12 h-12 ${tool.color} text-white rounded-xl flex items-center justify-center shrink-0 shadow-soft`}>
+                               <tool.icon className="h-6 w-6" />
+                            </div>
+                            <div className="flex-1">
+                               <h4 className="text-[15px] font-bold text-brand-text">{tool.name}</h4>
+                               <p className="text-xs text-brand-muted leading-tight mt-0.5">{tool.description}</p>
+                            </div>
+                            <ChevronRight className="h-4 w-4 text-brand-muted group-hover:text-brand-primary group-hover:translate-x-1 transition-all" />
+                         </Link>
+                       ))}
+                       <div className="p-3 pt-1 border-t border-brand-border mt-2">
+                          <p className="text-[10px] text-center font-bold text-brand-muted uppercase tracking-widest">Pressione enter para ver mais resultados</p>
+                       </div>
+                    </div>
+                  ) : (
+                    <div className="p-12 text-center text-brand-muted space-y-3">
+                       <Search className="h-10 w-10 mx-auto opacity-20" />
+                       <p className="font-bold">Ops! Nenhuma ferramenta encontrada.</p>
+                       <p className="text-sm">Tente buscar por palavras-chave como "GPT", "SEO" ou "PDF".</p>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
             <a 
               href="#ferramentas"
               className="w-full sm:w-auto px-10 py-4 bg-brand-primary text-white text-[16px] font-semibold rounded-2xl hover:bg-brand-hover hover:-translate-y-0.5 hover:shadow-lg transition-all text-center flex items-center justify-center cursor-pointer h-[52px] shadow-soft"
@@ -859,6 +1009,8 @@ function ToolRenderer({ id }: { id: ToolId }) {
           case "title-generator": return <TitleGeneratorTool />;
           case "long-tail-keyword": return <LongTailKeywordTool />;
           case "headline-analyzer": return <HeadlineAnalyzerTool />;
+          case "description-creator": return <DescriptionCreatorTool />;
+          case "hook-generator": return <HookGeneratorTool />;
           case "pdf-converter": return <PDFConverterTool />;
           default: return null;
         }
